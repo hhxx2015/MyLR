@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="mongodb-driver-3.2.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/桌面/jar/mongodb-driver-3.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
