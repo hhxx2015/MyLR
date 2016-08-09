@@ -1,4 +1,4 @@
-package model;
+package hao.LR.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,8 +41,8 @@ public class Vector {
 	
 	public Vector(double[] features, String lable) {
 		//super();
-		this.features = features;
 		this.lable = lable;
+		this.features = features;
 	}
 
 	@Override

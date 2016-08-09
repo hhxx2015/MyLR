@@ -1,4 +1,4 @@
-package model;
+package hao.LR.entity;
 
 import java.util.ArrayList;
 

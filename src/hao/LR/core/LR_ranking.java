@@ -1,10 +1,10 @@
-package LR;
+package hao.LR.core;
 
 import java.io.*;
 import java.util.*;
 
-import model.Vector;
-import tools.LoadFeatures;
+import hao.LR.entity.Vector;
+import hao.LR.util.io.LoadFeatures;
 import tools.writeFile;
 
 /**

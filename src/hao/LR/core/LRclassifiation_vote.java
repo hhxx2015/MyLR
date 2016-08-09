@@ -1,24 +1,20 @@
-package LR;
+package hao.LR.core;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.CollationElementIterator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-import model.Vector;
-import model.Vector_vote;
-import tools.LoadFeatures;
+import hao.LR.entity.Vector;
+import hao.LR.entity.Vector_vote;
+import hao.LR.util.io.LoadFeatures;
 import tools.writeFile;
 
 /**

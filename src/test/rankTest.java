@@ -4,10 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import LR.LR_ranking;
-import LR.LRclassifiation;
-import model.Vector;
-import tools.LoadFeatures;
+import hao.LR.core.LRclassifiation;
+import hao.LR.entity.Vector;
+import hao.LR.util.io.LoadFeatures;
 import tools.writeFile;
 
 public class rankTest {
@@ -15,7 +14,7 @@ public class rankTest {
 		int feaNub=46;//46
 		int itea = 5;
 		double alpha=0.1;
-		int b=1;//是否加入分类面
+		boolean b=true;//是否加入分类面
 		
 		String trainPath="../MyLR/Data/MQ2008/Fold1/train.txt";
 		String testPath="../MyLR/Data/MQ2008/Fold1/test.txt";
@@ -44,7 +43,7 @@ public class rankTest {
 		
 		int iter = 5;
 		double alpha=0.1;
-		int b=1;//是否加入分类面
+		boolean b=true;//是否加入分类面
 		
 		//配置lr
 		LRclassifiation lrc = new LRclassifiation(feaNub, alpha,b);

@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import LR.LRclassifiation;
-import model.Vector;
-import tools.LoadFeatures;
+import hao.LR.core.LRclassifiation;
+import hao.LR.entity.Vector;
+import hao.LR.util.io.LoadFeatures;
 import tools.writeFile;
 import util.readLRreold;
 
@@ -24,7 +24,7 @@ public class classifyWilliams {
 		double alpha=0.1;
 		int itea = 500;
 
-		int b = 1;
+		boolean b = true;
 		//配置lr
 		LRclassifiation lrc = new LRclassifiation(feaNub, alpha,b);
 		

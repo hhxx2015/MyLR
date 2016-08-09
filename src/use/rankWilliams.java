@@ -2,16 +2,11 @@ package use;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import LR.LRclassifiation;
-import model.Vector;
-import tools.LoadFeatures;
-import tools.writeFile;
-import util.readLRreold;
+import hao.LR.core.LRclassifiation;
+import hao.LR.entity.Vector;
+import hao.LR.util.io.LoadFeatures;
 
 /** 
 * @author  hao : 1347261894@qq.com 
@@ -25,7 +20,7 @@ public class rankWilliams {
 	public static void main(String[] args) throws IOException {
 		double alpha=0.1;
 		int itea = 500;
-		int b = 1;
+		boolean b = true;
 
 		String base = "willams_10vote";//normal20 willams_10vote
 		int feaNub=20;
