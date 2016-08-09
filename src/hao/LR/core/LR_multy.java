@@ -1,19 +1,14 @@
-package LR;
+package hao.LR.core;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import model.Vector;
-import tools.LoadFeatures;
-import tools.writeFile;
-import util.readLRreold;
+import hao.LR.entity.Vector;
+import hao.LR.util.io.LoadFeatures;
 
 /** 
  * 多类分类

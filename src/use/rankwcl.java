@@ -6,12 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import LR.LRclassifiation;
-import LR.LRclassifiation_vote;
-import model.Vector;
-import tools.LoadFeatures;
+import hao.LR.core.LRclassifiation;
+import hao.LR.entity.Vector;
+import hao.LR.util.io.LoadFeatures;
 import tools.writeFile;
-import util.readLRreold;
 
 /** 
 * @author  hao : 1347261894@qq.com 
@@ -31,7 +29,7 @@ public class rankwcl {
 	public static void main(String[] args) throws IOException {
 		double alpha=0.1;
 		int itea = 500;
-		int b = 1;
+		boolean b = true;
 
 		int feaNub=21;
 		String base = "willams_10vote";//normal20 willams_10vote

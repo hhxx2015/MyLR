@@ -1,19 +1,16 @@
-package tools;
+package hao.LR.util.io;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import model.Vector;
-import model.Vector_vote;
+import hao.LR.entity.Vector;
+import hao.LR.entity.Vector_vote;
 
 //import lrObject.TestCase;
 
@@ -79,7 +76,7 @@ public class LoadFeatures{
 			String ss[] = line.split(" ");
 			double feas[] = new double[feanub];
 			for (int i = 0; i < feanub; i++) {
-				feas[i]=Double.parseDouble(ss[i+2].split(":")[1]);
+				feas[i]=Double.parseDouble(ss[i+1].split(":")[1]);
 			}
 			//System.out.println(ss[0].substring(1));
 			//int asa = Integer.parseInt(ss[0])-1;

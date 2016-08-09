@@ -1,13 +1,12 @@
 package use;
 
-import LR.LRclassifiation;
-import model.Vector;
-import tools.LoadFeatures;
+import hao.LR.core.LRclassifiation;
+import hao.LR.entity.Vector;
+import hao.LR.util.io.LoadFeatures;
 import tools.writeFile;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
@@ -47,7 +46,7 @@ public class RANK_dbqa {
         double alpha=1;
         int itea = 500;
 
-        int b = 1;
+        boolean b = true;
         LRclassifiation lrc = new LRclassifiation(feaNub, alpha,b);
 
         String feaPath="/home/hao/桌面/DBQA/all/togenormal.fea";
