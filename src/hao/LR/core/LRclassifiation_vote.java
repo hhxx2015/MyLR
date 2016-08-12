@@ -15,7 +15,10 @@ import java.util.Date;
 import hao.LR.entity.Vector;
 import hao.LR.entity.Vector_vote;
 import hao.LR.util.io.LoadFeatures;
+import l2r4sr2016.eval.EvalEasy;
+import tools.io.FeatureLoader;
 import tools.writeFile;
+import util.readRankResultForDetect_v2;
 
 /**
  * lr实现分类vote版本
@@ -211,38 +214,82 @@ public class LRclassifiation_vote {
 		int itea = 500;
 		int b = 1;
 
-		String base = "willams_10vote";//normal20 willams_10vote
-		int feaNub=21;
-		String vote="_vote";//_vote
+		String base = "normal20";//normal20 willams_10vote
+		int feaNub = 20;
+		String vote = "_lrvote";//_vote
 
-		String trainfile="/home/hao/桌面/mylr/train/"+base+".txt";
-		String testFile="/home/hao/桌面/mylr/test/"+base+"/";
+		String trainfile = "/home/hao/桌面/mylr/old/train/" + base + ".txt";
+		String testFile = "/home/hao/桌面/mylr/old/test/" + base + "/";
 		String modelPath="../MyLR/Data/detect/feature/model/"+base+"_"+alpha+"_"+itea+vote+".txt";
-		String rankPre="/home/hao/桌面/mylr/vote/"+base+"/";//willams20_vote willams_logvote
-		
+
+
+		String trainAll = "/home/hao/桌面/mylr/old/train/" + base + "/";
+		String rankPre = "/home/hao/桌面/mylr/old/votepre/" + base + "/";//willams20_vote willams_logvote
+		String trainrankPre = "/home/hao/桌面/mylr/old/votePreTrain/" + base + "/";//willams20_vote willams_logvote
+		String ranklongidre = "/home/hao/桌面/mylr/old/voteLongidre/" + base + "/";
+		String rankTrainlongidre = "/home/hao/桌面/mylr/old/voteTrainlongidre/" + base + "/";
 		new File(rankPre).mkdirs();
+		new File(trainrankPre).mkdirs();
+		new File(ranklongidre).mkdirs();
+		new File(rankTrainlongidre).mkdirs();
+
 
 		System.out.println(base+"");
-		System.out.print("loadfeatures......");	printTime();
-		ArrayList<Vector_vote> trainfeaList = LoadFeatures.loadSVM_RankFea_vote(
-				feaNub,new File(trainfile));
-		System.out.print("initlrv......");	printTime();
-		LRclassifiation_vote lrv = new LRclassifiation_vote(feaNub, alpha, b);
-		System.out.print("train......");
-		System.out.print(trainfeaList.size()+"...");	printTime();
-		lrv.train(itea, trainfeaList);
-		lrv.writeWeight(modelPath);
 
-	//	LRclassifiation_vote lrv = new LRclassifiation_vote(modelPath);
+//		System.out.print("loadfeatures......");	printTime();
+//		ArrayList<Vector_vote> trainfeaList = LoadFeatures.loadSVM_RankFea_vote(
+//				feaNub,new File(trainfile));
+//		System.out.print("initlrv......");	printTime();
+//		LRclassifiation_vote lrv = new LRclassifiation_vote(feaNub, alpha, b);
+//		System.out.print("train......");
+//		System.out.print(trainfeaList.size()+"...");	printTime();
+//		lrv.train(itea, trainfeaList);
+//		lrv.writeWeight(modelPath);
+
+
+		FeatureLoader floader1 = new FeatureLoader(true, false, feaNub, FeatureLoader.lableClass.C3);
+		FeatureLoader testloader = new FeatureLoader(true, true, feaNub, FeatureLoader.lableClass.C3);
+
+
+		LRclassifiation_vote lrv = new LRclassifiation_vote(modelPath);
+		System.out.print("trainclassify......");
+		printTime();
+
 		System.out.print("testclassify......");	printTime();
+		File fss[] = new File(trainAll).listFiles();
+		for (File f : fss) {
+			ArrayList<Vector> listtest = floader1.loadFea(f.getPath());
+
+			ArrayList<Double> re = lrv.classify(listtest);
+			writeFile.writeResult(re, trainrankPre + f.getName());
+		}
+
+		for (double scoreLow = 0.99; scoreLow < 1.0; scoreLow += 0.1) {
+			System.out.print(scoreLow + "\t");
+			readRankResultForDetect_v2.scoreLow = scoreLow;
+			String re = readRankResultForDetect_v2.readEval(base, trainAll, trainrankPre, rankTrainlongidre);
+			EvalEasy.evalResultByOracle(re);
+		}
+
+
+		System.out.println("*********test*****************************************************************************************************");
+
+
 		File fs[] = new File(testFile).listFiles();
 		for (File f : fs) {
-			ArrayList<Vector> listtest = LoadFeatures.loadDefineFeature(feaNub,f);
+			ArrayList<Vector> listtest = testloader.loadFea(f.getPath());
 			//System.out.println(listtest.get(0));
 
-			ArrayList<Double> re =lrv.classify(listtest);
-			writeFile.writeResult(re, rankPre+f.getName());
+			ArrayList<Double> ree = lrv.classify(listtest);
+			writeFile.writeResult(ree, rankPre + f.getName());
 		}
+
+		double scoreLow = 0.9955;
+		System.out.print(scoreLow + "\t");
+		readRankResultForDetect_v2.scoreLow = scoreLow;
+		String ree = readRankResultForDetect_v2.readEval(base, testFile, rankPre, ranklongidre);
+		EvalEasy.evalResultByOracle(ree);
+
 		System.out.print("end.");
 		printTime();
 

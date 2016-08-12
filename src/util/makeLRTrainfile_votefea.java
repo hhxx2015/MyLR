@@ -22,7 +22,7 @@ public class makeLRTrainfile_votefea {
 	public static void main(String[] args) throws Exception {
 		String oldTrain="../MyLR/Data/detect/feature/test/williams/normal/";
 		String longidmap="../MyLR/Data/detect/feature/test/willianSta/";
-		String newTrain="../MyLR/Data/detect/feature/test/willams_vote/";
+		String newTrain = "../MyLR/Data/detect/feature/test/willams21_vote/";
 		new File(newTrain).mkdirs();
 		File fs[] = new File(oldTrain).listFiles();
 		for (File f : fs) {

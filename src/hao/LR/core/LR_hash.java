@@ -11,7 +11,6 @@ import hao.LR.entity.Feature;
 import java.io.*;
 import java.util.*;
 
-
 /**
  * @author hao
  * @version v2.0
@@ -73,8 +72,6 @@ public class LR_hash {
 
             for (int i = 0; i < lineNub; i++){
                 Feature feature = features.get(i);
-
-
                 FeaMap feaMap = feature.getFeaMap();
                 //添加分类面
                 if(b)   {  feaMap.putB();   }
@@ -168,7 +165,6 @@ public class LR_hash {
 		boolean b = true;
 		//配置lr
 		LR_hash lrh = new LR_hash(feaNub,alpha,b);
-
 
 	}
 }

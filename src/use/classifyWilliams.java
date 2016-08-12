@@ -24,7 +24,7 @@ public class classifyWilliams {
 		double alpha=0.1;
 		int itea = 500;
 
-		boolean b = true;
+		int b = 1;
 		//配置lr
 		LRclassifiation lrc = new LRclassifiation(feaNub, alpha,b);
 		

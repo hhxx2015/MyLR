@@ -11,13 +11,13 @@ import hao.LR.entity.Vector;
 import hao.LR.util.io.LoadFeatures;
 import tools.writeFile;
 
-/** 
-* @author  hao : 1347261894@qq.com 
-* @date 创建时间：2016年6月11日 下午4:50:32 
-* @version 1.0 
-* @parameter  
-* @since  
-* @return  
+/**
+ * @author hao : 1347261894@qq.com
+ * @date 创建时间：2016年6月11日 下午4:50:32
+ * @version 1.0
+ * @parameter
+ * @since
+ * @return
 */
 public class rankwcl {
 	static void printTime(){
@@ -29,7 +29,7 @@ public class rankwcl {
 	public static void main(String[] args) throws IOException {
 		double alpha=0.1;
 		int itea = 500;
-		boolean b = true;
+		int b = 1;
 
 		int feaNub=21;
 		String base = "willams_10vote";//normal20 willams_10vote

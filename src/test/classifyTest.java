@@ -36,7 +36,9 @@ public class classifyTest {
 
 //		ArrayList<Vector> listTest= LoadFeatures.loadDefineFeature(feaNub,new File(testPath));
 //
-		LRclassifiation lrc = new LRclassifiation(feaNub, alpha,b);
+		//LRclassifiation lrc = new LRclassifiation(feaNub, alpha,b);
+
+
 //		lrc.train(itea, listTrain);
 //		System.out.println(lrc.toString());
 //
