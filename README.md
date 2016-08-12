@@ -1,5 +1,5 @@
 # LR_v3
-简单实现，主要用于学习。
+Logistic Regression简单实现，主要用于学习。
 hao.LR.core包中是实现算法
 
 LR_hash.java 实现用hashmap匹配特征权重加快运行效率,尚未实现
