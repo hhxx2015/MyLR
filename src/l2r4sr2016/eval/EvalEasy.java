@@ -19,8 +19,8 @@ public class EvalEasy {
 	// String ourResultDir ="/home/hao/文档/mylr/longid/featureAll/";
 	//	String ourResultDir ="/home/hao/workspace/UseLDA_py/data/longidresult/";
 		//String ourResultDir ="/home/hao/workspace/MyLR/Data/detect/feature/ranklongidre/test/";
-	//	String ourResultDir ="/home/hao/桌面/vote_ranksvm/longid/willams_10vote/";//willams_10vote normal20
-		String ourResultDir ="/home/hao/桌面/mylr/votelongidre/willams_10vote_votelable/";//vote_willams_10vote
+		String ourResultDir = "/home/hao/桌面/vote_ranksvm/longid/willams_10vote/";//willams_10vote normal20
+		//	String ourResultDir ="/home/hao/桌面/mylr/votelongidre/willams_10vote_votelable/";//vote_willams_10vote
 	//	String ourResultDir ="/home/hao/桌面/mylr/longid/normal20/";
 	// String ourResultDir ="/home/hao/文档/lr/longid/featurePos/";/
 		//String ourResultDir ="/home/hao/桌面/分类任务/svml/longid/featureQueryString/";
@@ -28,11 +28,23 @@ public class EvalEasy {
 	//	evalResultByOracle(ourResultDir);		
 		File fs[] = new File(ourResultDir).listFiles();
 		for (File f:fs) {
-			System.out.print(f.getName().replaceAll("[top,score]","").replace("_","\t")+"\t");
-			evalResultByOracle(f.getPath()+"/");		
+			System.out.print(f.getName().replaceAll("[svmc,top,score]", "").replace("_", "\t") + "\t");
+			evalResultByOracle(f.getPath() + "/");
 		}
-	//		System.out.println(ourResultDir);
+		//	System.out.println(ourResultDir);
+		//evalResultByOracle(ourResultDir);
 	}
+
+
+	public static void maineval(String ourResultDir) throws IOException {//featureQueryString featureAll featureNeighbor featurePos
+		File fs[] = new File(ourResultDir).listFiles();
+		for (File f : fs) {
+			System.out.print(f.getName().replaceAll("[top,score]","").replace("_","\t")+"\t");
+			evalResultByOracle(f.getPath() + "/");
+		}
+		//		System.out.println(ourResultDir);
+	}
+
 
 	// ������Ľ����Ŀ¼�����۽��
 	public static String evalResultByOracle(String ourResultDir)

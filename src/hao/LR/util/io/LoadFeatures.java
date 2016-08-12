@@ -81,7 +81,7 @@ public class LoadFeatures{
 			//System.out.println(ss[0].substring(1));
 			//int asa = Integer.parseInt(ss[0])-1;
 			//Vector v = new Vector(feas,asa+"");
-			Vector v = new Vector(feas,(ss[0]));
+			Vector v = new Vector(feas, (ss[0]), line.split("#")[1]);
 			re.add(v);
 		}
 		br.close();

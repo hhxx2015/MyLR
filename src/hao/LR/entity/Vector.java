@@ -38,18 +38,30 @@ public class Vector {
 	
 	private double features[];
 	private String lable;
-	
+	private String longid;
+
 	public Vector(double[] features, String lable) {
 		//super();
 		this.lable = lable;
 		this.features = features;
 	}
 
+	public Vector(double[] features, String lable, String longid) {
+		//super();
+		this.lable = lable;
+		this.features = features;
+		this.longid = longid;
+	}
+
 	@Override
 	public String toString() {
-		return "vector [ lable="+lable+",features=" + Arrays.toString(features)  + "]";
+		return "vector [ longid=" + longid + " lable=" + lable + ",features=" + Arrays.toString(features) + "]";
 	}
-	
+
+	public String getLongid() {
+		return longid;
+	}
+
 	public double[] getFeatures() {
 		return features;
 	}

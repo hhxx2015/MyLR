@@ -31,9 +31,9 @@ public class FeatureLoader {
     }
 
     private int feaNub;//
-    private String splitChar;//空格
+    private String splitChar = " ";//空格
     private boolean rankFea;//是否排序
-    private boolean feaBub;//是否有特征号码
+    private boolean feaBub;//是否有特征序号
     private lableClass lableclass;
     private int indexFeaStart;
 
@@ -51,6 +51,30 @@ public class FeatureLoader {
         }else{
             this.rankFea = false;
             indexFeaStart=1;
+        }
+        this.feaNub = feaNub;
+        this.lableclass = lableclass;
+    }
+
+
+    /**
+     * @param feaBub     是否有特征序号
+     * @param qid        是否有qid
+     * @param feaNub     特征数量
+     * @param lableclass 标签类型
+     */
+    public FeatureLoader(boolean feaBub, boolean qid, int feaNub, lableClass lableclass) {
+        this.splitChar = " ";
+        this.feaBub = feaBub;
+        if (lableclass == lableClass.RANK) {
+            this.rankFea = true;
+            indexFeaStart = 2;
+        } else {
+            this.rankFea = false;
+            indexFeaStart = 1;
+        }
+        if (qid) {
+            indexFeaStart = 2;
         }
         this.feaNub = feaNub;
         this.lableclass = lableclass;
@@ -108,12 +132,12 @@ public class FeatureLoader {
         if(rankFea){
             return new Vector(feas,ss[0]);
         }else{
-            if(ss[0].equals(lableclass.N)){
-                return new Vector(feas,"1");
-            }else if(ss[0].equals(lableclass.P)){
-                return new Vector(feas,"0");
-            }else{
-                return null;
+            if (ss[0].equals(lableclass.N)) {
+                return new Vector(feas, "1", line.split("#")[1].split(" ")[0]);
+            } else if (ss[0].equals(lableclass.P)) {
+                return new Vector(feas, "0", line.split("#")[1].split(" ")[0]);
+            } else {
+                return new Vector(feas, ss[0], line.split("#")[1].split(" ")[0]);
             }
         }
     }
@@ -138,9 +162,6 @@ public class FeatureLoader {
 
     public static void main(String[] args) throws IOException {
         int feaNub=3;//46
-        int itea = 500;
-        double alpha=0.1;
-        int b=1;//是否加入分类面
 
         String trainPath="/home/hao/桌面/lrtest/train";
         String testPath="/home/hao/桌面/lrtest/test";
