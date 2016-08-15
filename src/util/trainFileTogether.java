@@ -18,10 +18,10 @@ import java.io.OutputStreamWriter;
 */
 public class trainFileTogether {
 	public static void main(String[] args) throws Exception {
-		String trainfs = "/home/hao/桌面/vote_ranksvm/train/willams_10vote/";//willams_vote
-		String allPath = "/home/hao/桌面/vote_ranksvm/train/willams21_10vote.txt";
-//		String trainfs="../MyLR/Data/detect/feature/train/williams/newTrain/";
-//		String allPath="../MyLR/Data/detect/feature/train/voterank.txt";
+		//String trainfs = "/home/hao/桌面/vote_ranksvm/test/willams_10vote/";//willams_vote
+		//String allPath = "/home/hao/桌面/vote_ranksvm/test/willams21_10vote.txt";
+		String trainfs = "/home/hao/IdeaProjects/MyLR/Data/detect/feature/test/willams21_vote/";
+		String allPath = "../MyLR/Data/detect/feature/test/willams21_vote.txt";
 		File fs[] = new File(trainfs).listFiles();
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(allPath), "UTF-8"));
 		int qid = 1;

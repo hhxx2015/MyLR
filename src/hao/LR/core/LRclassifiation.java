@@ -5,7 +5,6 @@ import hao.LR.entity.Vector;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -104,8 +103,6 @@ public class LRclassifiation {
 		} catch (IOException e) {
 			System.err.println("模型格式错误！");e.printStackTrace();
 		}
-
-
 	}
 	/**
 	 * @param itea 迭代次数

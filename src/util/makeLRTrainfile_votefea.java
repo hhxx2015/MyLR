@@ -33,11 +33,13 @@ public class makeLRTrainfile_votefea {
 			String oldLine = "";
 			while ((oldLine = brto.readLine()) != null) {
 				String longid=oldLine.split("#")[1];
+
 				//System.out.println(longid);
 				int newlable = lablemap.get(longid);
+				String fea21 = " 21:" + newlable / 10 + " #";
 				StringBuilder sb = new StringBuilder();
-				sb.append(oldLine);
-				sb.append(" "+newlable);
+				sb.append(oldLine.split("#")[0] + fea21);
+				sb.append(longid + " " + newlable);
 				bw.write(sb.toString());
 				bw.flush();
 				bw.newLine();

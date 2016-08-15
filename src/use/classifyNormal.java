@@ -54,20 +54,23 @@ public class classifyNormal {
         new File(rankTrainlongidre).mkdirs();
         System.out.println(base + "");
 /**/
-//		System.out.print("loadfeatures......");printTime();
-//		FeatureLoader fl = new FeatureLoader(true,true,feaNub, FeatureLoader.lableClass.C3);
-//		ArrayList<Vector> trainfeaList = fl.loadFea(trainfile);
-//
-//		System.out.print("initlrv......");printTime();
-//		LRclassifiation lrc = new LRclassifiation(feaNub, alpha, b);
-//
-//		System.out.print("train......");
-//		System.out.print(trainfeaList.size()+"...");printTime();
-//		lrc.train(itea, trainfeaList);
-//		lrc.writeWeight(modelPath);
+        System.out.print("loadfeatures......");
+        printTime();
+        FeatureLoader fl = new FeatureLoader(true, true, feaNub, FeatureLoader.lableClass.C3);
+        ArrayList<Vector> trainfeaList = fl.loadFea(trainfile);
+
+        System.out.print("initlrv......");
+        printTime();
+        LRclassifiation lrc = new LRclassifiation(feaNub, alpha, b);
+
+        System.out.print("train......");
+        System.out.print(trainfeaList.size() + "...");
+        printTime();
+        lrc.train(itea, trainfeaList);
+        lrc.writeWeight(modelPath);
 
 
-        LRclassifiation lrc = new LRclassifiation(modelPath);
+        //       LRclassifiation lrc = new LRclassifiation(modelPath);
 
         FeatureLoader testloader = new FeatureLoader(true, false, feaNub, FeatureLoader.lableClass.C3);
         System.out.print("testclassify......");
