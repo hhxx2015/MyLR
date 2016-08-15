@@ -20,9 +20,10 @@ import java.util.HashMap;
 */
 public class makeLRTrainfile {
 	public static void main(String[] args) throws Exception {
-		String oldTrain="../MyLR/Data/detect/feature/train/williams/normal/";
-		String longidmap="../MyLR/Data/detect/feature/train/willianSta/";
-		String newTrain="../MyLR/Data/detect/feature/train/williams/newTrain/";
+		String oldTrain = "../MyLR/Data/detect/feature/test/williams/normal/";
+		String longidmap = "../MyLR/Data/detect/feature/test/willianSta/";
+		String newTrain = "../MyLR/Data/detect/feature/test/williams/newTest/";
+		new File(newTrain).mkdirs();
 		File fs[] = new File(oldTrain).listFiles();
 		for (File f : fs) {
 			BufferedReader brto = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));

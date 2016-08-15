@@ -9,6 +9,11 @@ public class FeaMap extends HashMap<Integer,Double>{
         super();
     }
 
+    /**
+     * 初始化weight数组
+     *
+     * @param feaNub
+     */
     public FeaMap(int feaNub){
         super();
         for (int i=0;i<feaNub;i++){
@@ -16,6 +21,9 @@ public class FeaMap extends HashMap<Integer,Double>{
         }
     }
 
+    /**
+     * 加入分类面
+     */
     public void putB(){
         this.put(-1,1.0);
     }
