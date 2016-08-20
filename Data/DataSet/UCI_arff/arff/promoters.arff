@@ -1,0 +1,250 @@
+% 1. Title of Database: E. coli promoter gene sequences (DNA)
+%                       with associated imperfect domain theory
+% 
+% 2. Sources:
+%    (a) Creators: 
+%        - promoter instances: C. Harley (CHARLEY@McMaster.CA) and R. Reynolds 
+%        - non-promoter instances and domain theory: M. Noordewier
+%          -- (non-promoters derived from work of lab of Prof. Tom Record, 
+%              University of Wisconsin Biochemistry Department)
+%    (b) Donor: M. Noordewier and J. Shavlik, {noordewi,shavlik}@cs.wisc.edu
+%    (c) Date received: 6/30/90
+% 
+% 3. Past Usage:
+%    (a) biological: 
+%        -- Harley, C. and Reynolds, R. 1987.  
+%           "Analysis of E. Coli Promoter Sequences."
+%           Nucleic Acids Research, 15:2343-2361.
+%        machine learning:
+%        -- Towell, G., Shavlik, J. and Noordewier, M. 1990.
+%           "Refinement of Approximate Domain Theories by Knowledge-Based
+%           Artificial Neural Networks." In Proceedings of the Eighth National
+%           Conference on Artificial Intelligence (AAAI-90).
+%    (b) attributes predicted: member/non-member of class of sequences with
+%        biological promoter activity (promoters initiate the process of gene
+%        expression).
+%    (c) Results of study indicated that machine learning techniques (neural
+%        networks, nearest neighbor, contributors' KBANN system) performed as
+%        well/better than classification based on canonical pattern matching
+%        (method used in biological literature).
+% 
+% 4. Relevant Information Paragraph:
+%    This dataset has been developed to help evaluate a "hybrid" learning
+%    algorithm ("KBANN") that uses examples to inductively refine preexisting
+%    knowledge.  Using a "leave-one-out" methodology, the following errors
+%    were produced by various ML algorithms.  (See Towell, Shavlik, &
+%    Noordewier, 1990, for details.)
+% 
+% 	    System	 Errors		Comments
+% 	    ------	 ------		--------
+% 	     KBANN	  4/106		a hybrid ML system
+% 	     BP		  8/106		std backprop with one hidden layer
+% 	     O'Neill	 12/106		ad hoc technique from the bio. lit.
+% 	     Near-Neigh  13/106		a nearest-neighbor algo (k=3)
+% 	     ID3	 19/106		Quinlan's decision-tree builder
+% 	     	
+%    Type of domain: non-numeric, nominal (one of A, G, T, C)
+%    -- Note: DNA nucleotides can be grouped into a hierarchy, as shown below:
+% 
+% 		      X (any)
+% 		    /   \
+% 	  (purine) R     Y (pyrimidine)
+% 		  / \   / \
+% 		 A   G T   C
+% 
+%  
+% 5. Number of Instances: 106
+% % 
+% % 6. Number of Attributes: 59
+% %    -- class (positive or negative)
+%    -- instance name
+%    -- 57 sequential nucleotide ("base-pair") positions
+% 
+% 7. Attribute information:
+%    -- Statistics for numeric domains: No numeric features used.
+%    -- Statistics for non-numeric domains
+% %       -- Frequencies:  Promoters Non-Promoters
+% %                        --------- -------------
+% %                A        27.7%     24.4%
+%                G        20.0%     25.4%
+%                T        30.2%     26.5%
+%                C        22.1%     23.7%
+% 
+%    Attribute #:  Description:
+%    ============  ============
+%              1   One of {+/-}, indicating the class ("+" = promoter).
+%              2   The instance name (non-promoters named by position in the
+%                  1500-long nucleotide sequence provided by T. Record).
+%           3-59   The remaining 57 fields are the sequence, starting at 
+%                  position -50 (p-50) and ending at position +7 (p7). Each of
+%                  these fields is filled by one of {a, g, t, c}.
+% 
+% 8. Missing Attribute Values: none
+% 
+% 9. Class Distribution: 50% (53 positive instances, 53 negative instances)
+@relation 'promoters'
+@attribute '1' {'a','g','t','c'}
+@attribute '2' {'a','g','t','c'}
+@attribute '3' {'a','g','t','c'}
+@attribute '4' {'a','g','t','c'}
+@attribute '5' {'a','g','t','c'}
+@attribute '6' {'a','g','t','c'}
+@attribute '7' {'a','g','t','c'}
+@attribute '8' {'a','g','t','c'}
+@attribute '9' {'a','g','t','c'}
+@attribute '10' {'a','g','t','c'}
+@attribute '11' {'a','g','t','c'}
+@attribute '12' {'a','g','t','c'}
+@attribute '13' {'a','g','t','c'}
+@attribute '14' {'a','g','t','c'}
+@attribute '15' {'a','g','t','c'}
+@attribute '16' {'a','g','t','c'}
+@attribute '17' {'a','g','t','c'}
+@attribute '18' {'a','g','t','c'}
+@attribute '19' {'a','g','t','c'}
+@attribute '20' {'a','g','t','c'}
+@attribute '21' {'a','g','t','c'}
+@attribute '22' {'a','g','t','c'}
+@attribute '23' {'a','g','t','c'}
+@attribute '24' {'a','g','t','c'}
+@attribute '25' {'a','g','t','c'}
+@attribute '26' {'a','g','t','c'}
+@attribute '27' {'a','g','t','c'}
+@attribute '28' {'a','g','t','c'}
+@attribute '29' {'a','g','t','c'}
+@attribute '30' {'a','g','t','c'}
+@attribute '31' {'a','g','t','c'}
+@attribute '32' {'a','g','t','c'}
+@attribute '33' {'a','g','t','c'}
+@attribute '34' {'a','g','t','c'}
+@attribute '35' {'a','g','t','c'}
+@attribute '36' {'a','g','t','c'}
+@attribute '37' {'a','g','t','c'}
+@attribute '38' {'a','g','t','c'}
+@attribute '39' {'a','g','t','c'}
+@attribute '40' {'a','g','t','c'}
+@attribute '41' {'a','g','t','c'}
+@attribute '42' {'a','g','t','c'}
+@attribute '43' {'a','g','t','c'}
+@attribute '44' {'a','g','t','c'}
+@attribute '45' {'a','g','t','c'}
+@attribute '46' {'a','g','t','c'}
+@attribute '47' {'a','g','t','c'}
+@attribute '48' {'a','g','t','c'}
+@attribute '49' {'a','g','t','c'}
+@attribute '50' {'a','g','t','c'}
+@attribute '51' {'a','g','t','c'}
+@attribute '52' {'a','g','t','c'}
+@attribute '53' {'a','g','t','c'}
+@attribute '54' {'a','g','t','c'}
+@attribute '55' {'a','g','t','c'}
+@attribute '56' {'a','g','t','c'}
+@attribute '57' {'a','g','t','c'}
+@attribute 'class' {'+','-'}
+@data
+t a c t a g c a a t a c g c t t g c g t t c g g t g g t t a a g t a t g t a t a a t g c g c g g g c t t g t c g t +
+t g c t a t c c t g a c a g t t g t c a c g c t g a t t g g t g t c g t t a c a a t c t a a c g c a t c g c c a a +
+g t a c t a g a g a a c t a g t g c a t t a g c t t a t t t t t t t g t t a t c a t g c t a a c c a c c c g g c g +
+a a t t g t g a t g t g t a t c g a a g t g t g t t g c g g a g t a g a t g t t a g a a t a c t a a c a a a c t c +
+t c g a t a a t t a a c t a t t g a c g a a a a g c t g a a a a c c a c t a g a a t g c g c c t c c g t g g t a g +
+a g g g g c a a g g a g g a t g g a a a g a g g t t g c c g t a t a a a g a a a c t a g a g t c c g t t t a g g t +
+c a g g g g g t g g a g g a t t t a a g c c a t c t c c t g a t g a c g c a t a g t c a g c c c a t c a t g a a t +
+t t t c t a c a a a a c a c t t g a t a c t g t a t g a g c a t a c a g t a t a a t t g c t t c a a c a g a a c a +
+c g a c t t a a t a t a c t g c g a c a g g a c g t c c g t t c t g t g t a a a t c g c a a t g a a a t g g t t t +
+t t t t a a a t t t c c t c t t g t c a g g c c g g a a t a a c t c c c t a t a a t g c g c c a c c a c t g a c a +
+g c a a a a a t a a a t g c t t g a c t c t g t a g c g g g a a g g c g t a t t a t g c a c a c c c c g c g c c g +
+c c t g a a a t t c a g g g t t g a c t c t g a a a g a g g a a a g c g t a a t a t a c g c c a c c t c g c g a c +
+g a t c a a a a a a a t a c t t g t g c a a a a a a t t g g g a t c c c t a t a a t g c g c c t c c g t t g a g a +
+c t g c a a t t t t t c t a t t g c g g c c t g c g g a g a a c t c c c t a t a a t g c g c c t c c a t c g a c a +
+t t t a t a t t t t t c g c t t g t c a g g c c g g a a t a a c t c c c t a t a a t g c g c c a c c a c t g a c a +
+a a g c a a a g a a a t g c t t g a c t c t g t a g c g g g a a g g c g t a t t a t g c a c a c c g c c g c g c c +
+a t g c a t t t t t c c g c t t g t c t t c c t g a g c c g a c t c c c t a t a a t g c g c c t c c a t c g a c a +
+a a a c a a t t t c a g a a t a g a c a a a a a c t c t g a g t g t a a t a a t g t a g c c t c g t g t c t t g c +
+t c t c a a c g t a a c a c t t t a c a g c g g c g c g t c a t t t g a t a t g a t g c g c c c c g c t t c c c g +
+g c a a a t a a t c a a t g t g g a c t t t t c t g c c g t g a t t a t a g a c a c t t t t g t t a c g c g t t t +
+g a c a c c a t c g a a t g g c g c a a a a c c t t t c g c g g t a t g g c a t g a t a g c g c c c g g a a g a g +
+a a a a a c g t c a t c g c t t g c a t t a g a a a g g t t t c t g g c c g a c c t t a t a a c c a t t a a t t a +
+t c t g a a a t g a g c t g t t g a c a a t t a a t c a t c g a a c t a g t t a a c t a g t a c g c a a g t t c a +
+a c c g g a a g a a a a c c g t g a c a t t t t a a c a c g t t t g t t a c a a g g t a a a g g c g a c g c c g c +
+a a a t t a a a a t t t t a t t g a c t t a g g t c a c t a a a t a c t t t a a c c a a t a t a g g c a t a g c g +
+t t g t c a t a a t c g a c t t g t a a a c c a a a t t g a a a a g a t t t a g g t t t a c a a g t c t a c a c c +
+c a t c c t c g c a c c a g t c g a c g a c g g t t t a c g c t t t a c g t a t a g t g g c g a c a a t t t t t t +
+t c c a g t a t a a t t t g t t g g c a t a a t t a a g t a c g a c g a g t a a a a t t a c a t a c c t g c c c g +
+a c a g t t a t c c a c t a t t c c t g t g g a t a a c c a t g t g t a t t a g a g t t a g a a a a c a c g a g g +
+t g t g c a g t t t a t g g t t c c a a a a t c g c c t t t t g c t g t a t a t a c t c a c a g c a t a a c t g t +
+c t g t t g t t c a g t t t t t g a g t t g t g t a t a a c c c c t c a t t c t g a t c c c a g c t t a t a c g g +
+a t t a c a a a a a g t g c t t t c t g a a c t g a a c a a a a a a g a g t a a a g t t a g t c g c g t a g g g t +
+a t g c g c a a c g c g g g g t g a c a a g g g c g c g c a a a c c c t c t a t a c t g c g c g c c g a a g c t g +
+t a a a a a a c t a a c a g t t g t c a g c c t g t c c c g c t t a t a a g a t c a t a c g c c g t t a t a c g t +
+a t g c a a t t t t t t a g t t g c a t g a a c t c g c a t g t c t c c a t a g a a t g c g c g c t a c t t g a t +
+c c t t g a a a a a g a g g t t g a c g c t g c a a g g c t c t a t a c g c a t a a t g c g c c c c g c a a c g c +
+t c g t t g t a t a t t t c t t g a c a c c t t t t c g g c a t c g c c c t a a a a t t c g g c g t c c t c a t a +
+c c g t t t a t t t t t t c t a c c c a t a t c c t t g a a g c g g t g t t a t a a t g c c g c g c c c t c g a t +
+t t c g c a t a t t t t t c t t g c a a a g t t g g g t t g a g c t g g c t a g a t t a g c c a g c c a a t c t t +
+t g t a a a c t a a t g c c t t t a c g t g g g c g g t g a t t t t g t c t a c a a t c t t a c c c c c a c g t a +
+g a t c g c a c g a t c t g t a t a c t t a t t t g a g t a a a t t a a c c c a c g a t c c c a g c c a t t c t t +
+a a c g c a t a c g g t a t t t t a c c t t c c c a g t c a a g a a a a c t t a t c t t a t t c c c a c t t t t c +
+t t a g c g g a t c c t a c c t g a c g c t t t t t a t c g c a a c t c t c t a c t g t t t c t c c a t a c c c g +
+g c c t t c t c c a a a a c g t g t t t t t t g t t g t t a a t t c g g t g t a g a c t t g t a a a c c t a a a t +
+c a g a a a c g t t t t a t t c g a a c a t c g a t c t c g t c t t g t g t t a g a a t t c t a a c a t a c g g t +
+c a c t a a t t t a t t c c a t g t c a c a c t t t t c g c a t c t t t g t t a t g c t a t g g t t a t t t c a t +
+a t a t a a a a a a g t t c t t g c t t t c t a a c g t g a a a g t g g t t t a g g t t a a a a g a c a t c a g t +
+c a a g g t a g a a t g c t t t g c c t t g t c g g c c t g a t t a a t g g c a c g a t a g t c g c a t c g g a t +
+g g c c a a a a a a t a t c t t g t a c t a t t t a c a a a a c c t a t g g t a a c t c t t t a g g c a t t c c t +
+t a g g c a c c c c a g g c t t t a c a c t t t a t g c t t c c g g c t c g t a t g t t g t g t g g a a t t g t g +
+c c a t c a a a a a a a t a t t c t c a a c a t a a a a a a c t t t g t g t a a t a c t t g t a a c g c t a c a t +
+t g g g g a c g t c g t t a c t g a t c c g c a c g t t t a t g a t a t g c t a t c g t a c t c t t t a g c g a g +
+t c a g a a a t a t t a t g g t g a t g a a c t g t t t t t t t a t c c a g t a t a a t t t g t t g g c a t a a t +
+a t a t g a a c g t t g a g a c t g c c g c t g a g t t a t c a g c t g t g a a c g a c a t t c t g g c g t c t a -
+c g a a c g a g t c a a t c a g a c c g c t t t g a c t c t g g t a t t a c t g t g a a c a t t a t t c g t c t c -
+c a a t g g c c t c t a a a c g g g t c t t g a g g g g t t t t t t g c t g a a a g g a g g a a c t a t a t g c g -
+t t g a c c t a c t a c g c c a g c a t t t t g g c g g t g t a a g c t a a c c a t t c c g g t t g a c t c a a t -
+c g t c t a t c g g t g a a c c t c c g g t a t c a a c g c t g g a a g g t g a c g c t a a c g c a g a t g c a g -
+g c c a a t c a a t c a a g a a c t t g a a g g g t g g t a t c a g c c a a c a g c c t g a c a t c c t t c g t t -
+t g g a t g g a c g t t c a a c a t t g a g g a a g g c a t a a c g c t a c t a c c t g a t g t t t a c t c c a a -
+g a g g t g g c t a t g t g t a t g a c c g a a c g a g t c a a t c a g a c c g c t t t g a c t c t g g t a t t a -
+c g t a g c g c a t c a g t g c t t t c t t a c t g t g a g t a c g c a c c a g c g c c a g a g g a c g a c g a c -
+c g a c c g a a g c g a g c c t c g t c c t c a a t g g c c t c t a a a c g g g t c t t g a g g g g t t t t t t g -
+c t a c g g t g g g t a c a a t a t g c t g g a t g g a g a t g c g t t c a c t t c t g g t c t a c t g a c t c g -
+a t a g t c t c a g a g t c t t g a c c t a c t a c g c c a g c a t t t t g g c g g t g t a a g c t a a c c a t t -
+a a c t c a a g g c t g a t a c g g c g a g a c t t g c g a g c c t t g t c c t t g c g g t a c a c a g c a g c g -
+t t a c t g t g a a c a t t a t t c g t c t c c g c g a c t a c g a t g a g a t g c c t g a g t g c t t c c g t t -
+t a t t c t c a a c a a g a t t a a c c g a c a g a t t c a a t c t c g t g g a t g g a c g t t c a a c a t t g a -
+a a c g a g t c a a t c a g a c c g c t t t g a c t c t g g t a t t a c t g t g a a c a t t a t t c g t c t c c g -
+a a g t g c t t a g c t t c a a g g t c a c g g a t a c g a c c g a a g c g a g c c t c g t c c t c a a t g g c c -
+g a a g a c c a c g c c t c g c c a c c g a g t a g a c c c t t a g a g a g c a t g t c a g c c t c g a c a a c t -
+t t a g a g a g c a t g t c a g c c t c g a c a a c t t g c a t a a a t g c t t t c t t g t a g a c g t g c c c t -
+t a t t c g t c t c c g c g a c t a c g a t g a g a t g c c t g a g t g c t t c c g t t a c t g g a t t g t c a c -
+t g c t g a a a g g a g g a a c t a t a t g c g c t c a t a c g a t a t g a a c g t t g a g a c t g c c g c t g a -
+c a t g a a c t c a a g g c t g a t a c g g c g a g a c t t g c g a g c c t t g t c c t t g c g g t a c a c a g c -
+t t c g t c t c c g c g a c t a c g a t g a g a t g c c t g a g t g c t t c c g t t a c t g g a t t g t c a c c a -
+c a t g t c a g c c t c g a c a a c t t g c a t a a a t g c t t t c t t g t a g a c g t g c c c t a c g c g c t t -
+a g g a g g a a c t a c g c a a g g t t g g a a c a t c g g a g a g a t g c c a g c c a g c g c a c c t g c a c g -
+t c t c a a c a a g a t t a a c c g a c a g a t t c a a t c t c g t g g a t g g a c g t t c a a c a t t g a g g a -
+t g a a g t g c t t a g c t t c a a g g t c a c g g a t a c g a c c g a a g c g a g c c t c g t c c t c a a t g g -
+c t a t a t g c g c t c a t a c g a t a t g a a c g t t g a g a c t g c c g c t g a g t t a t c a g c t g t g a a -
+g c g g c a g c a c g t t t c c a c g c g g t g a g a g c c t c a g g a t t c a t g t c g a t g t c t t c c g g t -
+a t c c c t a a t g t c t a c t t c c g g t c a a t c c a t c t a c g t t a a c c g a g g t g g c t a t g t g t a -
+t g g c g t c t a t c g g t g a a c c t c c g g t a t c a a c g c t g g a a g g t g a c g c t a a c g c a g a t g -
+t c t c g t g g a t g g a c g t t c a a c a t t g a g g a a g g c a t a a c g c t a c t a c c t g a t g t t t a c -
+t a t t g g c t t g c t c a a g c a t g a a c t c a a g g c t g a t a c g g c g a g a c t t g c g a g c c t t g t -
+t a g a g g g t g t a c t c c a a g a a g a g g a a g a t g a g g c t a g a c g t c t c t g c a t g g a g t a t g -
+c a g c g g c a g c a c g t t t c c a c g c g g t g a g a g c c t c a g g a t t c a t g t c g a t g t c t t c c g -
+t t a c g t t g g c g a c c g c t a g g a c t t t c t t g t t g a t t t t c c a t g c g g t g t t t t g c g c a a -
+a c g c t a a c g c a g a t g c a g c g a a c g c t c g g c g t a t t c t c a a c a a g a t t a a c c g a c a g a -
+g g t g t t t t g c g c a a t g t t a a t c g c t t t g t a c a c c t c a g g c a t g t a a a c g t c t t c g t a -
+a a c c a t t c c g g t t g a c t c a a t g a g c a t c t c g a t g c a g c g t a c t c c t a c a t g a a t a g a -
+a g a c g t c t c t g c a t g g a g t a t g a g a t g g a c t a c g g t g g g t a c a a t a t g c t g g a t g g a -
+t g t t g a t t t t c c a t g c g g t g t t t t g c g c a a t g t t a a t c g c t t t g t a c a c c t c a g g c a -
+t g c a c g g g t t g c g a t a g c c t c a g c g t a t t c a g g t g c g a g t t c g a t a g t c t c a g a g t c -
+a g g c a t g t a a a c g t c t t c g t a g c g c a t c a g t g c t t t c t t a c t g t g a g t a c g c a c c a g -
+c c g a g t a g a c c c t t a g a g a g c a t g t c a g c c t c g a c a a c t t g c a t a a a t g c t t t c t t g -
+c g c t a g g a c t t t c t t g t t g a t t t t c c a t g c g g t g t t t t g c g c a a t g t t a a t c g c t t t -
+t a t g a c c g a a c g a g t c a a t c a g a c c g c t t t g a c t c t g g t a t t a c t g t g a a c a t t a t t -
+a g a g g g t g t a c t c c a a g a a g a g g a a g a t g a g g c t a g a c g t c t c t g c a t g g a g t a t g a -
+g a g a g c a t g t c a g c c t c g a c a a c t t g c a t a a a t g c t t t c t t g t a g a c g t g c c c t a c g -
+c c t c a a t g g c c t c t a a a c g g g t c t t g a g g g g t t t t t t g c t g a a a g g a g g a a c t a t a t -
+g t a t t c t c a a c a a g a t t a a c c g a c a g a t t c a a t c t c g t g g a t g g a c g t t c a a c a t t g -
+c g c g a c t a c g a t g a g a t g c c t g a g t g c t t c c g t t a c t g g a t t g t c a c c a a g g c t t c c -
+c t c g t c c t c a a t g g c c t c t a a a c g g g t c t t g a g g g g t t t t t t g c t g a a a g g a g g a a c -
+t a a c a t t a a t a a a t a a g g a g g c t c t a a t g g c a c t c a t t a g c c a a t c a a t c a a g a a c t -

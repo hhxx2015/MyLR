@@ -1,0 +1,51 @@
+dataset        1NN       C4.5      NaiveBayes(kenerl estimator)
+anneal         0.9907    0.9863    0.9461 
+artificial     0.5735    0.5978    0.3589 
+audiology      (not available)     
+auto-mpg       0.7075    0.7939    0.6689 
+autos          0.8019    0.8011    0.6133 
+balance-scale  0.7405    0.7859    0.9163 
+balloons       0.6723    0.6832    0.7888 
+breast-cancer  0.6933    0.7476    0.7420 
+breast-w       0.9607    0.9531    0.9754 
+bridges2       0.5589    0.6618    0.6177 
+clean1         0.8598    0.8230    0.8226 
+colic          (not available)     
+connect-4      (not available)     
+credit-a       0.8168    0.8572    0.8127 
+credit-g       0.7140    0.7146    0.7429 
+diabetes       0.7057    0.7383    0.7515 
+echocardiogram 0.6262    0.7429    0.7452 
+flag           0.5975    0.6071    0.5069 
+glass          0.6956    0.6864    0.5152 
+hayes-roth     0.8391    0.6921    0.8139 
+heart-c        0.7627    0.7548    0.8384 
+heart-h        (not available)     
+heart-statlog  0.7574    0.7837    0.8452 
+hepatitis      0.8277    0.8332    0.8559 
+house-votes-84 0.9505    0.9641    0.9134 
+hypothyroid    (not available)     
+ionosphere     0.8670    0.8965    0.9181 
+iris           0.9540    0.9493    0.9640 
+kr-vs-kp       0.9685    0.9943    0.8771 
+labor          (not available)     
+letter         0.9603    0.8805    0.7425 
+lymph          0.8658    0.7593    0.8301 
+machine        0.8772    0.8886    0.8488 
+mushroom       1.0000    1.0000    0.9737 
+page-blocks    0.9598    0.9695    0.9393 
+primary-tumor  0.3228    0.3922    0.4765 
+promoters      0.8951    0.7982    0.9110 
+segment        0.9712    0.9674    0.8577 
+sick           (not available)     
+solar-flare    0.7517    0.8683    0.8192 
+sonar          0.8604    0.7282    0.7246 
+soybean        0.9210    0.9153    0.9155 
+splice         0.9709    0.9410    0.9544 
+tic-tac-toe    0.9267    0.8573    0.6961 
+vehicle        0.6978    0.7317    0.6096 
+vote           0.9530    0.9668    0.9127 
+vowel          0.9914    0.7958    0.7114 
+waveform-5000  0.7339    0.7540    0.7987 
+wine           0.9533    0.9363    0.9741 
+zoo            0.9577    0.9239    0.9570 

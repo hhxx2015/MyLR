@@ -15,16 +15,17 @@ import java.util.*;
  * @author hao
  * @version v2.0
  */
-public class LR_hash {
-    private final String VERSION="LR_hash v2.0";
+public class LR_hash implements Serializable {
+    private final long serialVersionUID = 1L;
 
     private FeaMap weightMap;
     private double alpha;
-    private int feaNub;//特征数量
+    private int feaNub = 0;//特征数量
     private boolean b=false;//分类面标识，默认无分类面
     private int lineNub;
 
-    public HashMap<Integer,Double> getWeight(){
+
+    public FeaMap getWeight() {
         return this.weightMap;
     }
 
@@ -36,21 +37,23 @@ public class LR_hash {
 
     }
 
-    /**
-     * 构造方法1，用于声明分类器参数，初始化模型weight数组
-     * @param feaNub
-     * @param alpha
-     * @param b
-     */
-    public LR_hash(int feaNub , double alpha , boolean b) {
-        //super();
+    public void initClassify(Features features) {
+        this.lineNub = features.size();
+
+
+        this.weightMap = new FeaMap();
         if(b){
-            feaNub = feaNub+1;
-            this.weightMap.putB();
+            weightMap.putB();
         }
-        this.feaNub = feaNub;
+        for (int i = 0; i < feaNub; i++) {
+            weightMap.put(i, 1.0);
+        }
+    }
+
+    public LR_hash(int feaNub, double alpha, boolean b) {
+        this.b = b;
         this.alpha = alpha;
-        this.weightMap = new FeaMap(feaNub);
+        this.feaNub = feaNub;
     }
 
     /**
@@ -64,12 +67,9 @@ public class LR_hash {
      * @param features 实例数组
      */
     public void train(int itea,Features features){
-        this.lineNub = features.size();
-
+        initClassify(features);
         for (int it = 0; it < itea; it++) {
-
             HashMap <Integer,Double> preMap = new HashMap<Integer,Double>();
-
             for (int i = 0; i < lineNub; i++){
                 Feature feature = features.get(i);
                 FeaMap feaMap = feature.getFeaMap();
@@ -80,22 +80,38 @@ public class LR_hash {
                 preMap.put(i,prediction1);
             }
 
-            for (int j = 0; j < feaNub; j++) {
+            for (Integer j : weightMap.keySet()) {
                 double Allwrong=0.0;
                 for (int i = 0; i < lineNub; i++){
                     Feature feature = features.get(i);
-                    Integer lable = feature.getLable();
                     FeaMap feaMap = feature.getFeaMap();
+                    Double lable = feature.getLableValue();
                     double prediction1 = preMap.get(i);
-                    //double prediction1 = classify(feaMap);
                     if(feaMap.containsKey(j)){
-                        double wrong =( prediction1 - (lable+0.0) );
+                        double wrong = (prediction1 - lable);
                         Allwrong+=(wrong * feaMap.get(j));
                     }
                 }
                 Double newW = weightMap.get(j) - (alpha*(Allwrong/(lineNub+0.0)));
                 weightMap.put(j,newW);
             }
+
+//            for (int j = 0; j < feaNub; j++) {
+//                double Allwrong=0.0;
+//                for (int i = 0; i < lineNub; i++){
+//                    Feature feature = features.get(i);
+//                    Integer lable = feature.getLableValue();
+//                    FeaMap feaMap = feature.getFeaMap();
+//                    double prediction1 = preMap.get(i);
+//                    //double prediction1 = classify(feaMap);
+//                    if(feaMap.containsKey(j)){
+//                        double wrong =( prediction1 - (lable+0.0) );
+//                        Allwrong+=(wrong * feaMap.get(j));
+//                    }
+//                }
+//                Double newW = weightMap.get(j) - (alpha*(Allwrong/(lineNub+0.0)));
+//                weightMap.put(j,newW);
+//            }
 
         }
     }
@@ -114,7 +130,7 @@ public class LR_hash {
      * @param feamap 特征映射
      * @return
      */
-    private double classify(FeaMap feamap) {
+    public double classify(FeaMap feamap) {
         double logit=0.0;
         for (Integer feanub:feamap.keySet()) {
             Double x = feamap.get(feanub);
@@ -123,13 +139,6 @@ public class LR_hash {
         }
         return sigmoid(logit);
     }
-
-    /***↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓分类部分↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓***/
-    private double Accuracy=0.0;
-    public  double getPrecision(){
-        return this.Accuracy;
-    }
-
     /**
      * 用于test
      * @param features
@@ -158,13 +167,52 @@ public class LR_hash {
 
 /*****************分主函数*************************************************************************	******************************************************/
 	public static void main(String[] args) throws IOException {
-		int feaNub=6;
 		int iter = 5000;
 		double alpha=0.5;
 
 		boolean b = true;
 		//配置lr
-		LR_hash lrh = new LR_hash(feaNub,alpha,b);
+        LR_hash lrh = new LR_hash(5, alpha, b);
+
+        Features feas = new Features();
+        FeaMap fm = new FeaMap();
+        fm.put(0, 1.0);
+        fm.put(1, 0.8);
+        fm.put(2, 0.7);
+        fm.put(3, 0.6);
+        fm.put(4, 0.2);
+        Feature a1 = new Feature("1", fm);
+        fm = new FeaMap();
+        fm.put(0, 0.9);
+        fm.put(1, 0.8);
+        fm.put(2, 0.6);
+        fm.put(3, 0.9);
+        fm.put(5, 0.2);
+        Feature a2 = new Feature("1", fm);
+        feas.add(a1);
+        feas.add(a2);
+
+        fm = new FeaMap();
+        fm.put(0, 0.1);
+        fm.put(1, 0.1);
+        fm.put(2, 0.3);
+        fm.put(3, 0.4);
+        Feature b1 = new Feature("0", fm);
+        fm = new FeaMap();
+        fm.put(0, 0.2);
+        fm.put(1, 0.3);
+        fm.put(2, 0.4);
+        fm.put(3, 0.1);
+        fm.put(4, 0.2);
+        Feature b2 = new Feature("0", fm);
+        feas.add(b1);
+        feas.add(b2);
+        //feas.setFeaNub(10);
+
+        lrh.train(iter, feas);
+
+        System.out.println(lrh.getWeight());
+        System.out.println(lrh.classify(feas));
 
 	}
 }

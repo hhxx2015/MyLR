@@ -7,14 +7,20 @@ import java.util.HashMap;
  * Created by hao on 16-8-9.
  */
 public class Feature {
-    private Integer lable;
+    private String lable;
+    private Double lableValue;
     private FeaMap feaMap;
 
 //    public Feature() {
 //测试用
 //    }
 
-    public Feature(Integer lable, FeaMap feaMap) {
+    public Feature(FeaMap feaMap) {
+        this.feaMap = feaMap;
+    }
+
+
+    public Feature(String lable, FeaMap feaMap) {
         this.lable = lable;
         this.feaMap = feaMap;
     }
@@ -27,11 +33,19 @@ public class Feature {
                 '}';
     }
 
-    public Integer getLable() {
+    public void setLableValue(Double i) {
+        this.lableValue = i;
+    }
+
+    public Double getLableValue() {
+        return this.lableValue;
+    }
+
+    public String getLable() {
         return lable;
     }
 
-    public void setLable(Integer lable) {
+    public void setLable(String lable) {
         this.lable = lable;
     }
 

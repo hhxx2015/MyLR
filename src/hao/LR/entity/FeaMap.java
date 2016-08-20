@@ -22,7 +22,7 @@ public class FeaMap extends HashMap<Integer,Double>{
     }
 
     /**
-     * 加入分类面
+     * 加入分类面 -1
      */
     public void putB(){
         this.put(-1,1.0);

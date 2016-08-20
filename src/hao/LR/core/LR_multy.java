@@ -1,258 +1,211 @@
-package hao.LR.core;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import hao.LR.entity.Vector;
-import hao.LR.util.io.LoadFeatures;
-
-/** 
- * 多类分类
-* @author  hao : 1347261894@qq.com 
-* @date 创建时间：2016年6月10日 下午4:03:07 
-* @version 1.0 
-* @parameter  
-* @since  
-* @return  
-*/
-public class LR_multy {
-	private final String VERSION="LRmulty_V1.0";
-	private double weight[][];
-	private double alpha;
-	private int classNub;//特征数量
-	private int feaNub;//特征数量
-	private int b=0;//分类面标识，默认无分类面
-	
-	@Override
-	public String toString() {
-		return VERSION+"  feaNub="+ feaNub+",b="+ b+",[weight=" +Arrays.toString(weight) + ", alpha=" + alpha + "]";
-	}
-
-	public double[][] getWeight(){
-		return this.weight;
-	}
-	
-	/**
-	 * 写出模型，如果有分类面，分类面写在最后一列
-	 * @param modelPath
-	 */
-//	public void writeWeight(String modelPath) {
-//		BufferedWriter bw =null;
-//		try {
-//			bw = new BufferedWriter(new FileWriter(new File(modelPath)));
-//		} catch (IOException e) {
-//			System.err.println("路径不存在");
-//			e.printStackTrace();
-//		}
-//		try {
-//			bw.write(VERSION);bw.flush();bw.newLine();
-//			for (double w:weight) {
-//				bw.write(w+" ");bw.flush();
-//			}
-//			bw.newLine();
-//			bw.write("feaNub="+(feaNub-b));
-//			bw.write(" b="+b);
-//			bw.flush();bw.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+//package hao.LR.core;
+//
+//import java.io.*;
+//import java.util.*;
+//
+//import hao.LR.entity.Vector;
+///**
+// * lr实现分类
+// * @author hao
+// * @version v2.0 构造时加入了分类面选择，加入了权重模型写出和加载
+// *  @date 2016-5-31
+// */
+//public class LR_multy implements Serializable {
+//	private final long serialVersionUID = 1L;
+//
+//	private double weight[];
+//	private double alpha;
+//	private int feaNub;//特征数量
+//	private boolean b = false;//分类面标识，默认无分类面
+//
+//	//序列化写入文件
+//	public void saveModel(String path) throws IOException {
+//		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
+//		oos.writeObject(this);
+//		oos.close();
 //	}
-	
-	/**
-	 * 构造方法1，用于声明分类器参数，初始化模型weight数组
-	 * @param feaNub
-	 * @param alpha
-	 * @param b
-	 */
-	public LR_multy(int feaNub, double alpha,int b,int classNub) {
-		//super();
-		feaNub=feaNub+b;
-		this.feaNub=feaNub;
-		this.classNub=classNub;
-		this.weight=new double [classNub][feaNub];
-		this.b=b;
-		for (int j = 0;j < classNub; j++) {
-			for (int i = 0; i < feaNub; i++) {
-				this.weight[j][i]=1.0;
-			}
-		}
-		this.alpha = alpha;
-	}
-	/**
-	 * 构造方法2，用于加载模型
-	 */
-//	public LR_multy(String ModelPath) {
+//
+//	//反序列化从文件读取
+//	public void loadModel(String path) throws IOException, ClassNotFoundException {
+//		FileInputStream f = new FileInputStream(path);
+//		ObjectInputStream ois = new ObjectInputStream(f);
+//		LRclassifiation lrc = (LRclassifiation) ois.readObject();
+//		ois.close();
+//	}
+//
+//
+//	@Override
+//	public String toString() {
+//		return serialVersionUID + "  feaNub=" + feaNub + ",b=" + b + ",[weight=" + Arrays.toString(weight) + ", alpha=" + alpha + "]";
+//	}
+//
+//	public double[] getWeight(){
+//		return this.weight;
+//	}
+//
+//	/**
+//	 * 构造方法1，用于声明分类器参数，初始化模型weight数组
+//	 * @param feaNub
+//	 * @param alpha
+//	 * @param b
+//	 */
+//	public LR_multy(int feaNub, double alpha, boolean b) {
 //		//super();
-//		BufferedReader br = null;
-//		try {
-//			br = new BufferedReader(new FileReader(new File(ModelPath)));
-//		} catch (FileNotFoundException e) {
-//			System.err.println("模型不存在！");e.printStackTrace();
+//		this.b=b;
+//		if(b){
+//			feaNub = feaNub + 1;
 //		}
-//		try {
-//			if(br.readLine().equals(VERSION)){
-//				String weights[]=br.readLine().split(" ");
-//				System.out.print("loadmodel: ");
-//				System.out.print(br.readLine()+" weights=[");
-//				this.feaNub = weights.length;
-//				this.weight=new double [ this.feaNub];
-//				for (int i = 0; i < this.feaNub; i++) {
-//					this.weight[i]=Double.parseDouble(weights[i]);
-//					System.out.print(weight[i]);
-//					System.out.print(",");
-//				}
-//				System.out.println("]");
-//			}else{
-//				System.err.println("版本错误：V2.0");
-//			}
-//		} catch (IOException e) {
-//			System.err.println("模型格式错误！");e.printStackTrace();
-//		}		
+//		this.feaNub = feaNub;
+//		this.weight = new double[feaNub];
+//		for (int i = 0; i < feaNub; i++) {
+//			this.weight[i]=1.0;
+//		}
+//		this.alpha = alpha;
 //	}
-	
-	/**
-	 * @param itea迭代次数
-	 * @param vectors特征数组
-	 * train 分类面修改！！！！！！！！！！！！！！！！！！！！！！！！！！
-	 * 
-	 */
-	public void train(int itea,ArrayList<Vector> vectors){
-		int vNub = vectors.size();
-		for (int it = 0; it < itea; it++) {	
-			for (int cnub = 0; cnub < classNub; cnub++) {
-				for (int j=0;j < feaNub ; j++) {
-					double Allwrong=0.0;
-					for (int i =0;i<vNub;i++) {
-						Vector vecline = vectors.get(i);
-						int lable = Integer.parseInt(vecline.getLable());
-						if((cnub-lable)==0){
-							lable=1;
-						}else{
-							lable=0;							
-						}
-						double onefea[] = vecline.getFeatures();
-						double prediction1= classify(vecline)[cnub] ;//该行特征是1的概率
-						double wrong =( prediction1 - lable);
-						try{
-							Allwrong+=(wrong*onefea[j]);						
-						}catch( ArrayIndexOutOfBoundsException e){
-							Allwrong+=(wrong*1.0);
-						}	
-					}
-					weight[cnub][j] = weight[cnub][j] - (alpha*(Allwrong/(vNub+0.0))); 
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 正例的概率
-	 * @param z
-	 * @return
-	 */
-	private double sigmoid(double z) {
-		//return Math.exp(z) / (1.0 + Math.exp(z));//1
-		return 1.0/ (1.0 + Math.exp(-z));//1
-	}
-
-	/**
-	 * 先求和后求概率
-	 * @param 特征数组
-	 * @return
-	 */
-	private Double[] classify(Vector v) {
-		Double re[] = new Double[classNub];
-		double[] feas = v.getFeatures();
-		double logit=0.0;
-		for (int cnub = 0; cnub < classNub; cnub++) {
-			for (int i = 0; i < feaNub; i++) {
-				try{
-					logit += (feas[i]*weight[cnub][i]) ;
-				}catch( ArrayIndexOutOfBoundsException e){
-					logit += (1.0*weight[cnub][i]) ;
-				}
-			}	
-			re[cnub]=sigmoid(logit);
-		}
-		return re;
-	}
-/***↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓分类部分↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓***/
-	/**
-	 * 用于test
-	 * @param vectors
-	 * @return
-	 */
-	public ArrayList<Double[]> classify(ArrayList<Vector> vectors) {
-		ArrayList<Double[]> list = new ArrayList<>();
-		for (Vector v:vectors) {
-			Double[] score = classify(v);
-			//System.out.println(score[0]);
-			list.add(score);	
-		}
-		return list;
-	}
-	private static int big(Double[] d){
-		double temp=-1000.0;
-		int re=-1;
-		for (int i = 0; i < d.length; i++) {
-			if(d[i]>temp){
-				temp = d[i];
-				re=i;
-			}
-		}
-		return re;
-	}
-	public static void writedoubleArray(ArrayList<Double[]> idList, String fileName) throws IOException {  
-		BufferedWriter bw  = new BufferedWriter( new FileWriter(fileName));
-	//	System.out.println(idList.size());
-		for(Double[] d:idList){ 
-			//System.out.print(big(d));
-			bw.write(big(d)+"");bw.write("\t");
-			for (Double dd:d) {
-				//System.out.print("\t"+dd);
-				bw.write(dd+"");bw.write("\t");
-			}
-			//System.out.println();
-			bw.flush();bw.newLine();
-		}
-		bw.close(); 
-	}
-	
-	public static void main(String[] args) throws IOException {
-		int feaNub=29573;//46
-		int itea = 500;
-		double alpha=0.1;
-		int classNub=3;
-		int b=1;//是否加入分类面
-		int fold=2;
-		
-		String trainPath="/home/hao/桌面/学科分类/fold/lr/fold"+fold+"/train/train.txt";
-		String testPath="/home/hao/桌面/学科分类/fold/lr/fold"+fold+"/test/test.txt";
-		String testPre1 = "/home/hao/桌面/学科分类/fold/lr/fold"+fold+"/pre/pre.txt";
-		String trainPre1 = "/home/hao/桌面/学科分类/fold/lr/fold"+fold+"/trainpre/pre.txt";
-		
-		System.out.println("loadFea......");
-		ArrayList<Vector> listTrain = LoadFeatures.loadDefineFeature(feaNub,new File(trainPath));
-		ArrayList<Vector> listTest= LoadFeatures.loadDefineFeature(feaNub,new File(testPath));
-		//System.out.println(listTrain.get(0).toString());
-		//System.out.println(listTrain.get(1).toString());
-		//System.out.println(listTrain.get(2).toString());
-		System.out.println("init......");
-		LR_multy lrc = new LR_multy(feaNub, alpha,b,classNub);
-		System.out.println("train......");
-		
-		lrc.train(itea, listTrain);
-		//System.out.println(lrc.toString());
-		System.out.println("test......");
-
-		writedoubleArray(lrc.classify(listTest), testPre1);
-		writedoubleArray(lrc.classify(listTrain), trainPre1);
-	//	System.out.println(lrc.classify(listTest));
-		//System.out.println( lrc2.toString());
-	}
-	
-}
+//	/**
+//	 * 构造方法2，用于加载模型
+//	 */
+//	public LR_multy(String ModelPath) {
+//		try {
+//			this.loadModel(ModelPath);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//
+//
+//	/**
+//	 * @param itea 迭代次数
+//	 * @param vectors 实例数组
+//	 *
+//	 */
+//	public void train(int itea,ArrayList<Vector> vectors){
+//		int vNub = vectors.size();//得到实例数量
+//		for (int it = 0; it < itea; it++) {	//迭代次数
+//			for (int j=0;j < feaNub ; j++) {//第j个特征
+//				double Allwrong=0.0;
+//				for (int i =0;i<vNub;i++) {//单独计算每一行实例的误差
+//					Vector vecline = vectors.get(i);//得到该行实例
+//					String lable = vecline.getLable();//得到标签y
+//					double onefea[] = vecline.getFeatures();//得到特征数组
+//					double prediction1 = classify(vecline);//该行特征是1的概率  w*x
+//					double wrong = (prediction1 - Double.parseDouble(lable));//计算误差，wx-y
+//					if(b){
+//						try {
+//							Allwrong += (wrong * onefea[j]);            //叠加误差
+//						} catch (ArrayIndexOutOfBoundsException e) {
+//							Allwrong += (wrong * 1.0);                           //分类面
+//						}
+//					}else{
+//						Allwrong += (wrong * onefea[j]);
+//					}
+//
+//				}
+//				weight[j] = weight[j] - (alpha * (Allwrong / (vNub + 0.0)));    //更新第j个特征
+//			}
+//		}
+//	}
+//	/**
+//	 * 正例的概率
+//	 * @param z
+//	 * @return
+//	 */
+//	private double sigmoid(double z) {
+//		//return Math.exp(z) / (1.0 + Math.exp(z));//1
+//		return 1.0/ (1.0 + Math.exp(-z));//1
+//	}
+//
+//	/**
+//	 * 先求和后求概率
+//	 * @param v 特征数组
+//	 * @return
+//	 */
+//	private double classify(Vector v) {
+//		double[] feas = v.getFeatures();
+//		double logit=0.0;
+//		for (int i = 0; i < feaNub; i++) {
+//			try{
+//				logit += (feas[i]*weight[i]) ;
+//			}catch( ArrayIndexOutOfBoundsException e){
+//				//System.out.println(i);
+//				logit += (1.0*weight[i]) ;
+//			}
+//		}
+//		return sigmoid(logit);
+//	}
+//
+//	/***
+//	 * ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓分类部分↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+//	 ***/
+//	private double Accuracy = 0.0;
+//
+//	public  double getPrecision(){
+//		return this.Accuracy;
+//	}
+//
+//	/**
+//	 * 用于test
+//	 * @param vectors
+//	 * @return
+//	 */
+//	public ArrayList<Double> classify(ArrayList<Vector> vectors) {
+//		int correct=0;
+//		ArrayList<Double> list = new ArrayList<>();
+//		for (Vector v:vectors) {
+//			double score = classify(v);
+//			if(score>=0.5&&v.getLable().equals("1")){
+//				correct++;
+//			}else if(score<0.5&&v.getLable().equals("0")){
+//				correct++;
+//			}
+//			list.add(score);
+//		}
+//		Accuracy = (correct+0.0) / (vectors.size()+0.0);
+//		return list;
+//	}
+//
+///***↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑分类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*****/
+//
+//	/**
+//	 * 特殊！！！！仅用于源检索实验test  longid
+//	 * @param vectors
+//	 * @return
+//	 */
+//	public ArrayList<Double> classifyForLongid(ArrayList<Vector> vectors) {
+//		//?????
+//		return null;
+//	}
+//
+///*****************分主函数*************************************************************************	******************************************************/
+////	public static void main(String[] args) throws IOException {
+////		int feaNub=6;
+////		int iter = 5000;
+////		double alpha=0.5;
+////
+////		int b = 0;
+////		//配置lr
+////		LRclassifiation lrc = new LRclassifiation(feaNub, alpha);
+////
+////		 // 加载特征
+////		//ArrayList<Vector> listtrain = LoadFeatures.loadFeatures2(feaNub+1,new File("../MyLR/Data/aa.txt"));
+////		ArrayList<Vector> listtrain = LoadFeatures.loadSvmFeature(feaNub,new File("../MyLR/Data/05/Meteor_Score.txt"));
+////		//train
+////		lrc.train(iter,listtrain);
+////
+////		double weight[] = lrc.getWeight();
+////		System.out.print("weight: ");
+////		for (int i = 0; i < weight.length; i++) {
+////			System.out.print(weight[i]+" ");
+////		}
+////		System.out.println();
+////
+////		//classify
+////		System.out.println(lrc.classify(listtrain));
+////		System.out.println(lrc.getPrecision());
+//////		writeFile.writeResult(n.classifyAll(listtrain),
+//////				"/home/hao/桌面/b");
+////				//"/home/hao/桌面/分类任务/data/noQID/train/featurePospre.txt");
+////	}
+//}
