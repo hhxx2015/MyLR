@@ -1,4 +1,4 @@
-//package hao.LR.core;
+package hao.LR.core;//package hao.LR.core;
 //
 //import java.io.*;
 //import java.util.*;

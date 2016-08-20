@@ -1,4 +1,4 @@
-//package hao.LR.util.io;
+package hao.LR.util.io;//package hao.LR.util.io;
 //
 //
 //import hao.LR.core.LRclassifiation;
