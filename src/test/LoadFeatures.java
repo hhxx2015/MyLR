@@ -1,4 +1,4 @@
-package hao.LR.util.io;
+package test;
 
 import hao.LR.core.LR_hash;
 import hao.LR.entity.FeaMap;
