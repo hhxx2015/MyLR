@@ -12,5 +12,6 @@
     <orderEntry type="library" name="mongodb-driver-3.2.2" level="project" />
     <orderEntry type="library" name="mongodb-driver-3.2.2-sources" level="project" />
     <orderEntry type="library" name="bson-2.10.0" level="project" />
+    <orderEntry type="library" name="org.jfree:jfreechart:1.0.19" level="project" />
   </component>
 </module>

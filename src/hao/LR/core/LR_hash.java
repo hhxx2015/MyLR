@@ -41,11 +41,11 @@ public class LR_hash implements Serializable {
     public void initClassify(Features features) {
         this.lineNub = features.size();
 
-
         this.weightMap = new FeaMap();
         if (b) {
             weightMap.putB();
         }
+
         for (int i = 0; i < feaNub; i++) {
             weightMap.put(i, 1.0);
         }
@@ -79,7 +79,6 @@ public class LR_hash implements Serializable {
                 if (b) {
                     feaMap.putB();
                 }
-
                 double prediction1 = classify(feaMap);
                 preMap.put(i, prediction1);
             }
@@ -88,11 +87,12 @@ public class LR_hash implements Serializable {
                 double Allwrong = 0.0;
                 for (int i = 0; i < lineNub; i++) {
                     Feature feature = features.get(i);
+
                     FeaMap feaMap = feature.getFeaMap();
-                    Double lable = feature.getLableValue();
-                    double prediction1 = preMap.get(i);
+                    Double label = feature.getLableValue();
+                    Double prediction1 = preMap.get(i);
                     if (feaMap.containsKey(j)) {
-                        double wrong = (prediction1 - lable);
+                        Double wrong = (prediction1 - label);
                         Allwrong += (wrong * feaMap.get(j));
                     }
                 }
@@ -184,7 +184,7 @@ public class LR_hash implements Serializable {
 
         boolean b = true;
         //配置lr
-        LR_hash lrh = new LR_hash(5, alpha, b);
+        LR_hash lrh = new LR_hash(6, alpha, b);
 
         Features feas = new Features();
         FeaMap fm = new FeaMap();

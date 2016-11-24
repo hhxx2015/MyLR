@@ -1,7 +1,5 @@
 package hao.LR.entity;
 
-import java.util.HashMap;
-
 /**
  * 特征类
  * Created by hao on 16-8-9.
@@ -15,13 +13,14 @@ public class Feature {
 //测试用
 //    }
 
-    public Feature(FeaMap feaMap) {
-        this.feaMap = feaMap;
-    }
+//    public Feature(FeaMap feaMap) {
+//        this.feaMap = feaMap;
+//    }
 
 
     public Feature(String lable, FeaMap feaMap) {
         this.lable = lable;
+        this.lableValue =  Double.parseDouble(lable);
         this.feaMap = feaMap;
     }
 
