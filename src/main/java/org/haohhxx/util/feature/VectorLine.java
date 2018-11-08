@@ -1,8 +1,11 @@
 package org.haohhxx.util.feature;
 
-import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.HashMap;
+
+
+
+
 
 /**
  * @author zhenyuan_hao@163.com
@@ -15,11 +18,28 @@ public class VectorLine extends HashMap<Integer,Double> {
 
     }
 
+
+    public VectorLine(LineDataType lineDataType, String svmLine){
+        switch (lineDataType){
+            case svm: this.loadSVMLine(svmLine);break;
+            case csv: this.loadCSVLine(svmLine);break;
+            default:System.out.println("wrong data type!");
+        }
+    }
+
     public VectorLine(double target){
         this.target=target;
     }
 
-    public VectorLine(String svmLine){
+    private void loadCSVLine(String csvLine){
+        String [] ls = csvLine.split(",");
+        this.target = Double.parseDouble(ls[0]);
+        for (int i = 1; i <ls.length ; i++) {
+            super.put(i-1,Double.parseDouble(ls[i]));
+        }
+    }
+
+    private void loadSVMLine(String svmLine){
         String [] ls = svmLine.split("\\s");
         this.target = Double.parseDouble(ls[0]);
         for (int i = 1; i <ls.length ; i++) {
@@ -36,6 +56,14 @@ public class VectorLine extends HashMap<Integer,Double> {
         this.target = target;
     }
 
+    public enum LineDataType{
+        svm("svm"), csv("csv");
+        private final String dtype;
+        LineDataType(String dtype) {
+            this.dtype = dtype;
+        }
+
+    }
 }
 
 

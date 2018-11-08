@@ -10,20 +10,40 @@ public class LrTest {
 
     public static void main(String[] args) {
 
-        String fpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\a1a";
+//        String fpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\a1a";
+//        String fpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\train_transduction.dat";
+        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\lineartrain.csv";
+        String testpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\lineartrain.csv";
 
-        VectorMatrix vm = new VectorMatrix();
-        IteratorReader.getIteratorReader(fpath)
+        VectorMatrix trainvm = new VectorMatrix();
+        IteratorReader.getIteratorReader(trainpath)
                 .readLines()
-                .forEach(line -> vm.add(new VectorLine(line)));
+                .stream()
+                .filter(line->!line.startsWith("#"))
+                .forEach(line -> trainvm.add(new VectorLine(VectorLine.LineDataType.csv, line)));
 
-        LogisticRegression clr = new LogisticRegression();
+        VectorMatrix testvm = new VectorMatrix();
+        IteratorReader.getIteratorReader(testpath)
+                .readLines()
+                .stream()
+                .filter(line->!line.startsWith("#"))
+                .forEach(line -> testvm.add(new VectorLine(VectorLine.LineDataType.csv, line)));
 
-        clr.fit(500,vm);
 
-        double pre = clr.predict(vm.get(15));
-        System.out.println(pre);
-        System.out.println(vm.get(15).getTarget());
+        LogisticRegression clr = new LogisticRegression(0.1);
+
+        clr.fit(500,trainvm);
+
+        for (int i : new int[]{0,10,15}){
+            VectorLine vl = testvm.get(i);
+            double pre = clr.predict(vl);
+            System.out.println(pre);
+            System.out.println(vl.getTarget());
+        }
 
     }
+
+
+
+
 }

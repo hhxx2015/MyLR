@@ -4,28 +4,40 @@ import org.haohhxx.util.feature.VectorLine;
 import org.haohhxx.util.feature.VectorMatrix;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @author zhenyuan_hao@163.com
  */
 public class LogisticRegression {
 
-    private final Random random = new Random();
-    private final double alpha = 0.0001;
-    private VectorLine weightMap = new VectorLine();
+    public LogisticRegression(double alpha){
+        this.alpha = alpha;
+    }
 
+    private final Random random = new Random();
+    private double alpha;
+    private VectorLine weightMap = new VectorLine();
 
     /**
      * @param itea     迭代次数
      * @param features 实例数组
      */
     public void fit(int itea, VectorMatrix features) {
+
         int m = features.size();
+
         for (int it = 0; it < itea; it++) {
+
             HashMap<Integer, Double> preMap = new HashMap<>(m);
-            for (int i = 0; i < m ; i++) {
+
+            /*
+              梯度下降  全部数据迭代一次后更新 weight
+             */
+            for (int i = 0; i < m ; i++){
                 VectorLine xi = features.get(i);
                 double predict = predict(xi);
                 preMap.put(i, predict);
@@ -34,21 +46,21 @@ public class LogisticRegression {
             for (Integer j : weightMap.keySet()) {
                 double gradient = 0.0;
                 for (int i = 0; i < m; i++) {
-                    VectorLine vectorLine = features.get(i);
-                    double yi = vectorLine.getTarget();
+                    VectorLine xi = features.get(i);
+                    double yi = xi.getTarget();
 
                     Double predict = preMap.get(i);
-                    if (vectorLine.containsKey(j)) {
+                    if (xi.containsKey(j)) {
                         Double err = (predict - yi);
-                        gradient += (err * vectorLine.get(j));
+                        gradient += (err * xi.get(j));
                     }
                 }
-                Double theta = weightMap.getOrDefault(j, random.nextDouble()) - (alpha * (gradient / m));
+                /* System.out.println(gradient / m); */
+                Double theta = weightMap.get(j) - (alpha * (gradient / m));
                 weightMap.put(j, theta);
             }
         }
     }
-
 
     /**
      * 正例的概率
@@ -60,7 +72,13 @@ public class LogisticRegression {
     }
 
 
-    public double predict(VectorLine featureLine) {
+    public Double predict(VectorLine featureLine) {
+
+        /*
+           bias
+         */
+        featureLine.put(-1, 0.5);
+
         double logit = 0.0;
         for (Map.Entry<Integer,Double> featureNode : featureLine.entrySet()) {
             Integer featureIndex = featureNode.getKey();
@@ -72,6 +90,11 @@ public class LogisticRegression {
         return sigmoid(logit);
     }
 
+    public List<Double> predict(VectorMatrix features) {
+        return features.stream()
+                .map(this::predict)
+                .collect(Collectors.toList());
+    }
 
 }
 
