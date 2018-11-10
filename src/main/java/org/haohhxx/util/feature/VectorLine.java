@@ -2,10 +2,7 @@ package org.haohhxx.util.feature;
 
 
 import java.util.HashMap;
-
-
-
-
+import java.util.List;
 
 /**
  * @author zhenyuan_hao@163.com
@@ -17,7 +14,6 @@ public class VectorLine extends HashMap<Integer,Double> {
     public VectorLine(){
 
     }
-
 
     public VectorLine(LineDataType lineDataType, String svmLine){
         switch (lineDataType){
@@ -48,6 +44,9 @@ public class VectorLine extends HashMap<Integer,Double> {
         }
     }
 
+
+
+
     public double getTarget() {
         return target;
     }
@@ -57,12 +56,10 @@ public class VectorLine extends HashMap<Integer,Double> {
     }
 
     public enum LineDataType{
-        svm("svm"), csv("csv");
-        private final String dtype;
-        LineDataType(String dtype) {
-            this.dtype = dtype;
-        }
-
+        /**
+         * 特征文件格式
+         */
+        svm(), csv()
     }
 }
 

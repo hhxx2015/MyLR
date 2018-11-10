@@ -1,12 +1,9 @@
-/**
- * Created by hao on 16-11-23.
- */
+package libsvmt;
 
-
+import libsvm.*;
 import org.haohhxx.util.core.LogisticRegression;
 import org.haohhxx.util.feature.VectorLine;
-import org.haohhxx.util.feature.VectorMatrix;
-import org.haohhxx.util.io.IteratorReader;
+import org.haohhxx.util.io.CSVReader;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -28,44 +25,112 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**Simple plotting methods for the MLPClassifier examples
- * @author Alex Black
- */
-public class PlotUtil {
+public class PlotLibsvm {
 
+    private static double maxminum(double d){
+        double max0 = 14 ;
+        double min0 = 4;
+        return (d-min0) / (max0-min0);
+    }
 
     public static void main(String[] args) {
-        double[][] features_double = new double[1000][2];
-        double label[] = new double[1000];
 
-        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\lineartrain.csv";
-        VectorMatrix trainvm = new VectorMatrix();
-        List<String> lines = IteratorReader.getIteratorReader(trainpath).readLines();
-        for (int i = 0; i <lines.size() ; i++) {
-            trainvm.add(new VectorLine(VectorLine.LineDataType.csv, lines.get(i)));
-            String ls[] = lines.get(i).split(",");
-            features_double[i][0] = new Double(ls[1]);
-            features_double[i][1] = new Double(ls[2]);
-            label[i] =new Double(ls[0]);
+
+
+        double[][] features_double = new double[44][2];
+        double label[] = new double[44];
+
+        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\CampusData.csv";
+
+        svm_problem prob = new svm_problem();
+
+        CSVReader csvReader = CSVReader.getCSVReader(trainpath);
+        int i = 0;
+        while (csvReader.hasNext()){
+            List<String> line = csvReader.next();
+            double x1 = Double.parseDouble(line.get(0).trim());
+            double x2 = Double.parseDouble(line.get(1).trim());
+            double target = Double.parseDouble(line.get(5).trim());
+
+
+            x1 = maxminum(x1);
+            x2 = maxminum(x2);
+
+            if(target<=1){
+                target = 1.0;
+            }
+            if(target>=2){
+                target = 0.0;
+            }
+
+            features_double[i][0] = x1;
+            features_double[i][1] = x2;
+            label[i] = target;
+            i++;
         }
 
-        int iter = 5000;
-        double alpha = 0.1;
-        //配置lr
-        LogisticRegression lrh = new LogisticRegression(alpha);
-        lrh.fit(iter,trainvm);
-//        List<Double> pred_list = lrh.predict(feas);
+        prob.l = i;
+        prob.y = new double[i];
+        prob.x = new svm_node[i][];
 
-        printTrain(features_double,label,lrh);
+        csvReader = CSVReader.getCSVReader(trainpath);
+        i = 0;
+        while (csvReader.hasNext()){
+            List<String> line = csvReader.next();
+            double target = Double.parseDouble(line.get(5).trim());
+
+            if(target<=1){
+                target = 1.0;
+            }
+            if(target>=2){
+                target = 0.0;
+            }
+
+            prob.y[i] = target;
+            svm_node[] x = new svm_node[2];
+            for (int j = 0; j < 2; j++) {
+                x[j] = new svm_node();
+                x[j].index = j;
+                x[j].value = Double.parseDouble(line.get(j).trim());
+                x[j].value = maxminum(x[j].value);
+            }
+            prob.x[i] = x;
+            i++;
+        }
+
+        svm_parameter param = new svm_parameter();
+
+        param.svm_type = svm_parameter.C_SVC;
+        param.kernel_type = svm_parameter.RBF;
+//        param.kernel_type = svm_parameter.LINEAR;
+        param.degree = 3;
+        param.gamma = 2;	// 1/num_features
+        param.coef0 = 0;
+        param.nu = 0.5;
+        param.cache_size = 100;
+        param.C = 0.1;
+        param.eps = 1e-3;
+        param.p = 0.1;
+        param.shrinking = 1;
+        param.probability = 1;
+        param.nr_weight = 0;
+        param.weight_label = new int[0];
+        param.weight = new double[0];
+
+        svm_model model = svm.svm_train(prob,param);
+
+        int nr_class = svm.svm_get_nr_class(model);
+        double[] prob_estimates = new double[nr_class];
+
+        printTrain(features_double,label,model, prob_estimates);
     }
 
 
-
-    public static void printTrain(double features[][],double labels[] ,LogisticRegression lrh) {
+    public static void printTrain(double features[][],double labels[] ,svm_model model, double[] prob_estimates) {
         double xMin = 0;
         double xMax = 1.0;
-        double yMin = -0.2;
-        double yMax = 0.8;
+        double yMin = 0;
+        double yMax = 1;
 
         //Let's evaluate the predictions at every point in the x/y input space
         int nPointsPerAxis = 100;
@@ -80,10 +145,19 @@ public class PlotUtil {
                 backgroundIn[count][0] = x;
                 backgroundIn[count][1] = y;
 
-                VectorLine vectorLine = new VectorLine();
-                vectorLine.put(0,x);
-                vectorLine.put(1,y);
-                backgroundOut[count] = lrh.predict(vectorLine);
+                svm_node[] textX = new svm_node[2];
+
+                textX[0] = new svm_node();
+                textX[0].index = 0;
+                textX[0].value = x;
+
+                textX[1] = new svm_node();
+                textX[1].index = 1;
+                textX[1].value = y;
+                double pre = svm.svm_predict_probability(model,textX,prob_estimates);
+
+                backgroundOut[count] = pre;
+
                 System.out.println(x+"-----"+y+"----"+backgroundOut[count] );
                 count++;
             }
@@ -218,5 +292,4 @@ public class PlotUtil {
 
         return chart;
     }
-
 }

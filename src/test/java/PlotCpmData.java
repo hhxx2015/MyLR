@@ -6,7 +6,7 @@
 import org.haohhxx.util.core.LogisticRegression;
 import org.haohhxx.util.feature.VectorLine;
 import org.haohhxx.util.feature.VectorMatrix;
-import org.haohhxx.util.io.IteratorReader;
+import org.haohhxx.util.io.CSVReader;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -26,27 +26,47 @@ import org.jfree.ui.RectangleInsets;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 /**Simple plotting methods for the MLPClassifier examples
  * @author Alex Black
  */
-public class PlotUtil {
+public class PlotCpmData {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         double[][] features_double = new double[1000][2];
         double label[] = new double[1000];
 
-        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\lineartrain.csv";
+        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\CampusData.csv";
         VectorMatrix trainvm = new VectorMatrix();
-        List<String> lines = IteratorReader.getIteratorReader(trainpath).readLines();
-        for (int i = 0; i <lines.size() ; i++) {
-            trainvm.add(new VectorLine(VectorLine.LineDataType.csv, lines.get(i)));
-            String ls[] = lines.get(i).split(",");
-            features_double[i][0] = new Double(ls[1]);
-            features_double[i][1] = new Double(ls[2]);
-            label[i] =new Double(ls[0]);
+        CSVReader csvReader = CSVReader.getCSVReader(trainpath);
+        int i = 0;
+        while (csvReader.hasNext()){
+            VectorLine vectorLine = new VectorLine();
+            List<String> line = csvReader.next();
+            double x1 = Double.parseDouble(line.get(0).trim());
+            double x2 = Double.parseDouble(line.get(1).trim());
+            double target = Double.parseDouble(line.get(5).trim());
+
+            if(target<=1){
+                target = 1.0;
+            }
+            if(target>=2){
+                target = 0.0;
+            }
+
+            vectorLine.put(0,x1);
+            vectorLine.put(1,x2);
+            vectorLine.setTarget(target);
+
+            trainvm.add(vectorLine);
+
+            features_double[i][0] = x1;
+            features_double[i][1] = x2;
+            label[i] = target;
+            i++;
         }
 
         int iter = 5000;
