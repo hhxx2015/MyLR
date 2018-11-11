@@ -12,8 +12,8 @@ public class LrTest {
 
 //        String fpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\a1a";
 //        String fpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\train_transduction.dat";
-        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\lineartrain.csv";
-        String testpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\lineartrain.csv";
+        String trainpath = "C:\\code\\jdk8workspace\\MyLR\\src\\test\\resources\\lineartrain.csv";
+        String testpath = "C:\\code\\jdk8workspace\\MyLR\\src\\test\\resources\\lineartrain.csv";
 
         VectorMatrix trainvm = new VectorMatrix();
         IteratorReader.getIteratorReader(trainpath)

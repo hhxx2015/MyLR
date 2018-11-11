@@ -4,6 +4,7 @@
 
 
 import org.haohhxx.util.core.LogisticRegression;
+import org.haohhxx.util.core.SupportVectorMachine;
 import org.haohhxx.util.feature.VectorLine;
 import org.haohhxx.util.feature.VectorMatrix;
 import org.haohhxx.util.io.IteratorReader;
@@ -38,22 +39,30 @@ public class PlotUtil {
         double[][] features_double = new double[1000][2];
         double label[] = new double[1000];
 
-        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\lineartrain.csv";
+        String trainpath = "C:\\code\\jdk8workspace\\MyLR\\src\\test\\resources\\lineartrain.csv";
         VectorMatrix trainvm = new VectorMatrix();
         List<String> lines = IteratorReader.getIteratorReader(trainpath).readLines();
         for (int i = 0; i <lines.size() ; i++) {
-            trainvm.add(new VectorLine(VectorLine.LineDataType.csv, lines.get(i)));
+            String line = lines.get(i);
+            if(line.startsWith("0")){
+                line = line.replaceFirst("0","-1");
+            }
+            trainvm.add(new VectorLine(VectorLine.LineDataType.csv, line));
+
             String ls[] = lines.get(i).split(",");
-            features_double[i][0] = new Double(ls[1]);
-            features_double[i][1] = new Double(ls[2]);
-            label[i] =new Double(ls[0]);
+            features_double[i][0] = Double.parseDouble(ls[1]);
+            features_double[i][1] = Double.parseDouble(ls[2]);
+            label[i] = Double.parseDouble(ls[0]);
         }
 
         int iter = 5000;
         double alpha = 0.1;
+        double c = 1;
+        double gamma = 0.8;
         //配置lr
-        LogisticRegression lrh = new LogisticRegression(alpha);
-        lrh.fit(iter,trainvm);
+//        LogisticRegression lrh = new LogisticRegression(alpha);
+        SupportVectorMachine lrh = new SupportVectorMachine(gamma,c);
+        lrh.fit(trainvm, iter);
 //        List<Double> pred_list = lrh.predict(feas);
 
         printTrain(features_double,label,lrh);
@@ -61,7 +70,7 @@ public class PlotUtil {
 
 
 
-    public static void printTrain(double features[][],double labels[] ,LogisticRegression lrh) {
+    public static void printTrain(double features[][],double labels[] ,SupportVectorMachine lrh) {
         double xMin = 0;
         double xMax = 1.0;
         double yMin = -0.2;
@@ -83,8 +92,8 @@ public class PlotUtil {
                 VectorLine vectorLine = new VectorLine();
                 vectorLine.put(0,x);
                 vectorLine.put(1,y);
-                backgroundOut[count] = lrh.predict(vectorLine);
-                System.out.println(x+"-----"+y+"----"+backgroundOut[count] );
+                backgroundOut[count] = lrh.predict(vectorLine) + 1.0;
+                System.out.println(x+"\t"+y+"\t"+backgroundOut[count] );
                 count++;
             }
         }
