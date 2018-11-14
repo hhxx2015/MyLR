@@ -2,7 +2,6 @@ package org.haohhxx.util.feature;
 
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author zhenyuan_hao@163.com
@@ -15,10 +14,10 @@ public class VectorLine extends HashMap<Integer,Double> {
 
     }
 
-    public VectorLine(LineDataType lineDataType, String svmLine){
+    public VectorLine(LineDataType lineDataType, String line){
         switch (lineDataType){
-            case svm: this.loadSVMLine(svmLine);break;
-            case csv: this.loadCSVLine(svmLine);break;
+            case svm: this.loadSVMLine(line);break;
+            case csv: this.loadCSVLine(line);break;
             default:System.out.println("wrong data type!");
         }
     }
@@ -43,8 +42,6 @@ public class VectorLine extends HashMap<Integer,Double> {
             this.put(Integer.parseInt(node[0]),Double.parseDouble(node[1]));
         }
     }
-
-
 
 
     public double getTarget() {

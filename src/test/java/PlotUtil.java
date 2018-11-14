@@ -3,8 +3,7 @@
  */
 
 
-import org.haohhxx.util.core.LogisticRegression;
-import org.haohhxx.util.core.SupportVectorMachine;
+import org.haohhxx.util.core.svm.SupportVectorMachine;
 import org.haohhxx.util.feature.VectorLine;
 import org.haohhxx.util.feature.VectorMatrix;
 import org.haohhxx.util.io.IteratorReader;
@@ -29,25 +28,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**Simple plotting methods for the MLPClassifier examples
+/**
  * @author Alex Black
  */
 public class PlotUtil {
 
 
     public static void main(String[] args) {
-        double[][] features_double = new double[1000][2];
-        double label[] = new double[1000];
 
-        String trainpath = "C:\\code\\jdk8workspace\\MyLR\\src\\test\\resources\\lineartrain.csv";
-        VectorMatrix trainvm = new VectorMatrix();
+        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\moon_data_train.csv";
+        VectorMatrix trainData = new VectorMatrix();
         List<String> lines = IteratorReader.getIteratorReader(trainpath).readLines();
+
+        double[][] features_double = new double[lines.size()][2];
+        double label[] = new double[lines.size()];
+
         for (int i = 0; i <lines.size() ; i++) {
             String line = lines.get(i);
             if(line.startsWith("0")){
                 line = line.replaceFirst("0","-1");
             }
-            trainvm.add(new VectorLine(VectorLine.LineDataType.csv, line));
+            trainData.add(new VectorLine(VectorLine.LineDataType.csv, line));
 
             String ls[] = lines.get(i).split(",");
             features_double[i][0] = Double.parseDouble(ls[1]);
@@ -55,14 +56,17 @@ public class PlotUtil {
             label[i] = Double.parseDouble(ls[0]);
         }
 
-        int iter = 5000;
-        double alpha = 0.1;
-        double c = 1;
-        double gamma = 0.8;
+        int iter = 10000;
+        double c = 10;
+        double sigma = 2;
         //配置lr
 //        LogisticRegression lrh = new LogisticRegression(alpha);
-        SupportVectorMachine lrh = new SupportVectorMachine(gamma,c);
-        lrh.fit(trainvm, iter);
+
+//        SupportVectorMachine.KernalClass kernalFunction = new SupportVectorMachine.RBFKernal(sigma, trainData);
+        SupportVectorMachine.KernalClass kernalFunction = new SupportVectorMachine.LinearKernal(trainData);
+        SupportVectorMachine lrh = new SupportVectorMachine(c, kernalFunction);
+
+        lrh.fit(trainData, iter);
 //        List<Double> pred_list = lrh.predict(feas);
 
         printTrain(features_double,label,lrh);
@@ -71,13 +75,15 @@ public class PlotUtil {
 
 
     public static void printTrain(double features[][],double labels[] ,SupportVectorMachine lrh) {
-        double xMin = 0;
-        double xMax = 1.0;
-        double yMin = -0.2;
-        double yMax = 0.8;
+        double[]  alpha = lrh.getAlpha();
+
+        double xMin = -1.6;
+        double xMax = 2.6;
+        double yMin = -1.1;
+        double yMax = 1.7;
 
         //Let's evaluate the predictions at every point in the x/y input space
-        int nPointsPerAxis = 100;
+        int nPointsPerAxis = 300;
         double[][] backgroundIn = new double[nPointsPerAxis*nPointsPerAxis][2];
         double backgroundOut[] = new double[nPointsPerAxis*nPointsPerAxis];
         int count = 0;
@@ -93,37 +99,44 @@ public class PlotUtil {
                 vectorLine.put(0,x);
                 vectorLine.put(1,y);
                 backgroundOut[count] = lrh.predict(vectorLine) + 1.0;
-                System.out.println(x+"\t"+y+"\t"+backgroundOut[count] );
                 count++;
             }
         }
 
-        XYDataset c = createDataSetTrain(features, labels);
+        XYDataset c = createDataSetTrain(features, labels, alpha);
         XYZDataset backgroundData = createBackgroundData(backgroundIn, backgroundOut);
-        double[] mins=new double[]{0.0,-0.2};
-        double[] maxs=new double[]{1.0,0.8};
-        JFreeChart j = createChart(backgroundData, mins, maxs, nPointsPerAxis,c);
+        double[] mins = new double[]{0.0,-0.2};
+        double[] maxs = new double[]{1.0,0.8};
+        JFreeChart j = createChart(backgroundData, mins, maxs, nPointsPerAxis, c);
 
         JPanel panel = new ChartPanel(j);
         JFrame f = new JFrame();
         f.add(panel);
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.pack();
-        f.setTitle("Test Data");
+        f.setTitle("Train Data");
         f.setVisible(true);
     }
 
-    private static XYDataset createDataSetTrain(double[][] features, double[] labels ){
-
-        XYSeries[] series = new XYSeries[2];
+    private static XYDataset createDataSetTrain(double[][] features, double[] labels,double[] alpha){
+        XYSeries[] series = new XYSeries[4];
         for( int i=0; i<series.length; i++){
             series[i] = new XYSeries("Class " + String.valueOf(i));
         }
 
         int nRows = features.length;
         for( int i=0; i<nRows; i++ ){
-            int classIdx = (int)labels[i];
-            series[classIdx].add(features[i][0], features[i][1]);
+            if(alpha[i]>0&&labels[i]>0){
+                int classIdx = 2;
+                series[classIdx].add(features[i][0], features[i][1]);
+            }else if(alpha[i]>0&&labels[i]==0){
+                int classIdx = 3;
+                series[classIdx].add(features[i][0], features[i][1]);
+            }else {
+                int classIdx = (int)labels[i];
+                series[classIdx].add(features[i][0], features[i][1]);
+            }
+
         }
 
         XYSeriesCollection c = new XYSeriesCollection();
@@ -159,8 +172,8 @@ public class PlotUtil {
         return c;
     }
 
-
-    /**Create data for the background data set
+    /**
+     * Create data for the background data set
      */
     private static XYZDataset createBackgroundData(double[][] backgroundIn, double[] backgroundOut) {
         int nRows = backgroundIn.length;
@@ -178,10 +191,12 @@ public class PlotUtil {
     }
 
 
-    private static JFreeChart createChart(XYZDataset dataset, double[] mins, double[] maxs, int nPoints, XYDataset xyData) {
+    private static JFreeChart createChart(XYZDataset dataset,
+                                          double[] mins, double[] maxs,
+                                          int nPoints,
+                                          XYDataset xyData) {
         NumberAxis xAxis = new NumberAxis("X");
         xAxis.setRange(mins[0],maxs[0]);
-
 
         NumberAxis yAxis = new NumberAxis("Y");
         yAxis.setRange(mins[1], maxs[1]);
@@ -198,7 +213,6 @@ public class PlotUtil {
         plot.setAxisOffset(new RectangleInsets(5, 5, 5, 5));
         JFreeChart chart = new JFreeChart("", plot);
         chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(0, false);
-
 
         NumberAxis scaleAxis = new NumberAxis("Probability (class 0)");
         scaleAxis.setAxisLinePaint(Color.white);

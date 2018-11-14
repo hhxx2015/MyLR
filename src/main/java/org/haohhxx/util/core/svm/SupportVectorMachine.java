@@ -1,10 +1,9 @@
-package org.haohhxx.util.core;
+package org.haohhxx.util.core.svm;
 
 import com.google.common.collect.Sets;
 import org.haohhxx.util.feature.VectorLine;
 import org.haohhxx.util.feature.VectorMatrix;
 
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -13,31 +12,86 @@ import java.util.Set;
  */
 public class SupportVectorMachine {
 
-    public enum KernalFunction{
-        RBF()
-
+    public interface KernalClass {
+        double getKernalCatch(int i1,int i2);
+        double kernalFunction(VectorLine vectorLine1, VectorLine vectorLine2);
     }
-    private double gamma = 0.08;
 
-    private double bias = 0.0;
-    private double c = 0.1;
+    public static class LinearKernal implements KernalClass{
+
+        private double[][] kernelCache;
+
+        public LinearKernal(VectorMatrix vectorMatrix){
+            int n = vectorMatrix.size();
+            this.kernelCache = new double[n][n];
+
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < n; j++){
+                    this.kernelCache[i][j] = kernalFunction(vectorMatrix.get(i), vectorMatrix.get(j));
+                }
+            }
+        }
+
+        @Override
+        public double getKernalCatch(int i1,int i2) {
+            return kernelCache[i1][i2];
+        }
+
+        @Override
+        public double kernalFunction(VectorLine x1, VectorLine x2) {
+            return dot(x1,x2);
+        }
+    }
+
+    public static class RBFKernal implements KernalClass{
+        private double sigma;
+        private double[][] kernelCache;
+
+        public RBFKernal(double sigma, VectorMatrix vectorMatrix){
+            this.sigma = sigma;
+            int n = vectorMatrix.size();
+            this.kernelCache = new double[n][n];
+
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j < n; j++){
+                    this.kernelCache[i][j] = kernalFunction(vectorMatrix.get(i), vectorMatrix.get(j));
+                }
+            }
+        }
+
+        @Override
+        public double getKernalCatch(int i1,int i2) {
+            return kernelCache[i1][i2];
+        }
+
+        @Override
+        public double kernalFunction(VectorLine x1, VectorLine x2) {
+            double i1i2 = dot(x1,x2);
+            double i1i1 = dot(x1,x1);
+            double i2i2 = dot(x2,x2);
+            return Math.exp(- (i1i1 + i2i2 - 2 * i1i2) / (2 * Math.pow(sigma,2)));
+        }
+    }
+
+    private double b = 0.0;
     private int n = 0;
+
+    private double c;
     private double tolerance;
     private double eps;
 
     private double[] alpha = null;
     private double[] errorCache = null;
-    private double[][] dotDache = null;
-    private double[][] kernel = null;
 
     private final Random random;
 
     private VectorMatrix vectorMatrix;
 
+    private KernalClass kernalClass;
 
-    public SupportVectorMachine(double gamma, double c){
+    public SupportVectorMachine(double c, KernalClass kernalClass){
+        this.kernalClass = kernalClass;
         this.random = new Random();
-        this.gamma = gamma;
         this.tolerance = 0.001;
         this.eps= 0.001;
         this.c = c;
@@ -48,28 +102,10 @@ public class SupportVectorMachine {
         this.n = vectorMatrix.size();
         this.alpha = new double[n];
         this.errorCache = new double[n];
-        this.dotDache = new double[n][n];
-        this.kernel = new double[n][n];
-
-        //初始化点积dotCache
-        for (int i = 0; i < n; i++){
-            for (int j = 0; j < n; j++){
-                this.dotDache[i][j] = dot(vectorMatrix.get(i), vectorMatrix.get(j));
-            }
-        }
-
-        //初始化核函数
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                this.kernel[i][j] = kernelFunction(i, j);
-            }
-        }
     }
 
-    public void fit(VectorMatrix vectorMatrix, int epoch){
-
+    public void fit(VectorMatrix vectorMatrix, int epoch) {
         this.fitInit(vectorMatrix);
-
         int epochNub = 0;
         int numChanged = 0;
         boolean examineAll = true;
@@ -103,36 +139,6 @@ public class SupportVectorMachine {
             }
         }
 
-    }
-
-
-    /**
-     * 预测函数
-     */
-    public double predict(VectorLine vectorLine){
-        double sum = 0.0;
-        for (int j = 0; j < n; j++) {
-            sum += alpha[j] * vectorMatrix.get(j).getTarget() * kernelFunction(vectorMatrix.get(j), vectorLine);
-        }
-        sum += bias;
-        return sum;
-    }
-
-    private double kernelFunction(VectorLine x1,VectorLine x2){
-        double i1i2 = this.dot(x1,x2);
-        double i1i1 = this.dot(x1,x1);
-        double i2i2 = this.dot(x2,x2);
-        return Math.exp(- (i1i1 + i2i2 - 2 * i1i2) / (2 * Math.pow(gamma,2)));
-    }
-
-    /**
-     * 训练时的核函数 exp(-gamma*|u-v|^2)
-     * @param i1 i1
-     * @param i2 i2
-     * @return
-     */
-    private double kernelFunction(int i1, int i2){
-        return Math.exp(- (Math.pow(dotDache[i1][i1],2) + Math.pow(dotDache[i2][i2],2) - 2 * dotDache[i1][i2]) / (2 * Math.pow(gamma,2)));
     }
 
     private boolean examineExample(int i1){
@@ -230,9 +236,9 @@ public class SupportVectorMachine {
             return false;
         }
 
-        double k11 = kernel[i1][i1];
-        double k12 = kernel[i1][i2];
-        double k22 = kernel[i2][i2];
+        double k11 = kernalClass.getKernalCatch(i1,i1);
+        double k12 = kernalClass.getKernalCatch(i1,i2);
+        double k22 = kernalClass.getKernalCatch(i2,i2);
 
         double eta = 2 * k12 - k11 - k22;
         //根据不同情况计算出a2
@@ -279,8 +285,8 @@ public class SupportVectorMachine {
         }
 
         //update threshold b;
-        double b1 = bias - E1 - y1 * (a1 - alpha1) * k11 - y2 * (a2 - alpha2) * k12;
-        double b2 = bias - E2 - y1 * (a1 - alpha1) * k12 - y2 * (a2 - alpha2) * k22;
+        double b1 = b - E1 - y1 * (a1 - alpha1) * k11 - y2 * (a2 - alpha2) * k12;
+        double b2 = b - E2 - y1 * (a1 - alpha1) * k12 - y2 * (a2 - alpha2) * k22;
 
         double bNew = 0;
 //		double deltaB = 0;
@@ -292,19 +298,65 @@ public class SupportVectorMachine {
             bNew = (b1 + b2) / 2;
         }
 //		deltaB = bNew - this.b; //b的增量
-        this.bias = bNew;
-
+        this.b = bNew;
         //update error cache
         this.errorCache[i1] = calcError(i1);
         this.errorCache[i2] = calcError(i2);
-
         //store a1, a2 in alpha array
         alpha[i1] = a1;
         alpha[i2] = a2;
-
         return true;
     }
 
+
+    /**
+     * 计算误差公式： error = ∑a[i]*y[i]*k(x,x[i]) - y[i]
+     * @param k
+     * @return
+     */
+    private double calcError(int k){
+        return predicTrain(k) - this.vectorMatrix.get(k).getTarget();
+    }
+
+    /**
+     * 学习函数
+     * @param k k
+     * @return sum
+     */
+    private double predicTrain(int k){
+        double sum = 0.0;
+        for (int i = 0; i < n; i++){
+            sum += alpha[i] * vectorMatrix.get(i).getTarget() * kernalClass.getKernalCatch(i,k);
+        }
+        sum += this.b;
+        return sum;
+    }
+
+    /**
+     * 预测函数
+     */
+    public double predict(VectorLine vectorLine){
+        double sum = 0.0;
+        for (int j = 0; j < n; j++) {
+            sum += alpha[j] * vectorMatrix.get(j).getTarget()* kernalClass.kernalFunction(vectorMatrix.get(j), vectorLine);
+        }
+        sum += b;
+        return sum;
+    }
+
+
+    /**
+     * 随机选择一个样本i2，但要求i1 != i2
+     * @param i1 i1
+     * @return i2
+     */
+    private int randomSelect(int i1){
+        int i2;
+        do {
+            i2 = random.nextInt(n);
+        } while (i1 == i2);
+        return i2;
+    }
 
     private int getMaxJ(double E1){
         int i2 = -1;
@@ -329,52 +381,20 @@ public class SupportVectorMachine {
      * @param x2 x2
      * @return
      */
-    private double dot(VectorLine x1, VectorLine x2){
+    private static double dot(VectorLine x1, VectorLine x2){
         double sum = 0.0;
         Set<Integer> intersectionNodeSet = Sets.intersection(x1.keySet(), x2.keySet());
-        for (Integer x1FeatureNodeIndex : intersectionNodeSet){
-            sum += x1.get(x1FeatureNodeIndex) *  x2.get(x1FeatureNodeIndex);
+        for (Integer featureNodeIndex : intersectionNodeSet){
+            sum += x1.get(featureNodeIndex) *  x2.get(featureNodeIndex);
         }
         return sum;
     }
 
-
-
     /**
-     * 计算误差公式： error = ∑a[i]*y[i]*k(x,x[i]) - y[i]
-     * @param k
+     * 返回拉格朗日乘子得到支持向量
      * @return
      */
-    private double calcError(int k){
-        return learnFunction(k) - this.vectorMatrix.get(k).getTarget();
+    public double[] getAlpha() {
+        return alpha;
     }
-
-    /**
-     * 学习函数u，算误差的时候要用
-     * @param k k
-     * @return sum
-     */
-    private double learnFunction(int k){
-        double sum = 0.0;
-        for (int i = 0; i < n; i++){
-            sum += alpha[i] * vectorMatrix.get(i).getTarget() * kernel[i][k];
-        }
-        sum += this.bias;
-        return sum;
-    }
-
-    /**
-     * 随机选择一个样本i2，但要求i1 != i2
-     * @param i1 i1
-     * @return i2
-     */
-    private int randomSelect(int i1){
-        int i2;
-        do {
-            i2 = random.nextInt(n);
-        } while (i1 == i2);
-        return i2;
-    }
-
-
 }
