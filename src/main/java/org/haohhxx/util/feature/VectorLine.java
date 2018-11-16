@@ -1,7 +1,10 @@
 package org.haohhxx.util.feature;
 
 
+import com.google.common.collect.Sets;
+
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author zhenyuan_hao@163.com
@@ -41,6 +44,47 @@ public class VectorLine extends HashMap<Integer,Double> {
             String[] node = ls[i].split(":");
             this.put(Integer.parseInt(node[0]),Double.parseDouble(node[1]));
         }
+    }
+
+    /**
+     * 按位相减
+     * @param x2 x2
+     * @return
+     */
+    public VectorLine sub(VectorLine x2){
+        VectorLine vectorLine = new VectorLine();
+        Set<Integer> intersectionNodeSet = Sets.union(this.keySet(), x2.keySet());
+        for (Integer featureNodeIndex : intersectionNodeSet){
+            double sub = this.getOrDefault(featureNodeIndex,0.0) -  x2.getOrDefault(featureNodeIndex,0.0);
+            vectorLine.put(featureNodeIndex,sub);
+        }
+        return vectorLine;
+    }
+
+    /**
+     * 对两向量进行点积
+     * @param x2 x2
+     * @return
+     */
+    public double dot(VectorLine x2){
+        double sum = 0.0;
+        Set<Integer> intersectionNodeSet = Sets.intersection(this.keySet(), x2.keySet());
+        for (Integer featureNodeIndex : intersectionNodeSet){
+            sum += this.get(featureNodeIndex) *  x2.get(featureNodeIndex);
+        }
+        return sum;
+    }
+
+    /**
+     * 平方
+     * @return
+     */
+    public double pow2(){
+        double sum = 0.0;
+        for (Integer featureNodeIndex : this.keySet()){
+            sum += Math.pow(this.get(featureNodeIndex), 2);
+        }
+        return sum;
     }
 
 

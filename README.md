@@ -8,9 +8,15 @@ java简单实现一些机器学习算法
 
 ~~SVM~~
 
+Rank-SVM
+
+SVM(String Kernal)
+
 SVD
 
-决策树
+各种NN
+
+树
 
 
 

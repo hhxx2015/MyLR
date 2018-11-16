@@ -36,14 +36,14 @@ public class LogisticRegression {
 
         for (int it = 0; it < itea; it++) {
 
-            HashMap<Integer, Double> preMap = new HashMap<>(m);
+            HashMap<Integer, Double> predictCache = new HashMap<>(m);
             /*
               梯度下降  全部数据迭代一次后更新 weight
              */
             for (int i = 0; i < m ; i++){
                 VectorLine xi = features.get(i);
                 double predict = predict(xi);
-                preMap.put(i, predict);
+                predictCache.put(i, predict);
             }
 
             for (Integer j : weightMap.keySet()) {
@@ -52,9 +52,9 @@ public class LogisticRegression {
                     VectorLine xi = features.get(i);
                     double yi = xi.getTarget();
 
-                    Double predict = preMap.get(i);
+                    Double predict = predictCache.get(i);
+                    Double err = (predict - yi);
                     if (xi.containsKey(j)) {
-                        Double err = (predict - yi);
                         gradient += (err * xi.get(j));
                     }
                 }

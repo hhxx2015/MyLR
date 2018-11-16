@@ -4,8 +4,8 @@ import com.google.common.collect.Sets;
 import org.haohhxx.util.feature.VectorLine;
 import org.haohhxx.util.feature.VectorMatrix;
 
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zhenyuan_hao@163.com
@@ -17,29 +17,48 @@ public class SupportVectorMachine {
         double kernalFunction(VectorLine vectorLine1, VectorLine vectorLine2);
     }
 
+    public static class LinearKernalNoCache implements KernalClass{
+
+        private VectorMatrix vectorMatrix;
+
+        public LinearKernalNoCache(VectorMatrix vectorMatrix){
+            this.vectorMatrix = vectorMatrix;
+        }
+
+        @Override
+        public double getKernalCatch(int i1,int i2) {
+            return vectorMatrix.get(i1).dot(vectorMatrix.get(i2));
+        }
+
+        @Override
+        public double kernalFunction(VectorLine x1, VectorLine x2) {
+            return x1.dot(x2);
+        }
+    }
+
     public static class LinearKernal implements KernalClass{
 
-        private double[][] kernelCache;
+        private Map<String,Double> kernelCache;
 
         public LinearKernal(VectorMatrix vectorMatrix){
             int n = vectorMatrix.size();
-            this.kernelCache = new double[n][n];
-
-            for (int i = 0; i < n; i++){
-                for (int j = 0; j < n; j++){
-                    this.kernelCache[i][j] = kernalFunction(vectorMatrix.get(i), vectorMatrix.get(j));
+            this.kernelCache = new HashMap<>(n);
+            for (int i =  0; i < n; i++){
+                for (int j = i; j < n; j++){
+                    kernelCache.put(i+" "+j,kernalFunction(vectorMatrix.get(i), vectorMatrix.get(j)));
                 }
             }
         }
 
         @Override
         public double getKernalCatch(int i1,int i2) {
-            return kernelCache[i1][i2];
+            return kernelCache.containsKey(i1+" "+i2)?
+                            kernelCache.get(i1+" "+i2):kernelCache.get(i2+" "+i1);
         }
 
         @Override
         public double kernalFunction(VectorLine x1, VectorLine x2) {
-            return dot(x1,x2);
+            return x1.dot(x2);
         }
     }
 
@@ -66,11 +85,12 @@ public class SupportVectorMachine {
 
         @Override
         public double kernalFunction(VectorLine x1, VectorLine x2) {
-            double i1i2 = dot(x1,x2);
-            double i1i1 = dot(x1,x1);
-            double i2i2 = dot(x2,x2);
+            double i1i2 = x1.dot(x2);
+            double i1i1 = x1.pow2();
+            double i2i2 = x2.pow2();
             return Math.exp(- (i1i1 + i2i2 - 2 * i1i2) / (2 * Math.pow(sigma,2)));
         }
+
     }
 
     private double b = 0.0;
@@ -85,7 +105,7 @@ public class SupportVectorMachine {
 
     private final Random random;
 
-    private VectorMatrix vectorMatrix;
+    private VectorMatrix trainVectorMatrix;
 
     private KernalClass kernalClass;
 
@@ -98,7 +118,7 @@ public class SupportVectorMachine {
     }
 
     private void fitInit(VectorMatrix vectorMatrix){
-        this.vectorMatrix = vectorMatrix;
+        this.trainVectorMatrix = vectorMatrix;
         this.n = vectorMatrix.size();
         this.alpha = new double[n];
         this.errorCache = new double[n];
@@ -142,7 +162,7 @@ public class SupportVectorMachine {
     }
 
     private boolean examineExample(int i1){
-        double y1 = vectorMatrix.get(i1).getTarget();
+        double y1 = trainVectorMatrix.get(i1).getTarget();
         double alpha1 = alpha[i1];
         double E1 = 0;
 
@@ -205,8 +225,8 @@ public class SupportVectorMachine {
 
         double alpha1 = alpha[i1];
         double alpha2 = alpha[i2];
-        double y1 = vectorMatrix.get(i1).getTarget();
-        double y2 = vectorMatrix.get(i2).getTarget();
+        double y1 = trainVectorMatrix.get(i1).getTarget();
+        double y2 = trainVectorMatrix.get(i2).getTarget();
         double E1 = 0;
         double E2 = 0;
         double s = y1 * y2;
@@ -308,14 +328,13 @@ public class SupportVectorMachine {
         return true;
     }
 
-
     /**
      * 计算误差公式： error = ∑a[i]*y[i]*k(x,x[i]) - y[i]
      * @param k
      * @return
      */
     private double calcError(int k){
-        return predicTrain(k) - this.vectorMatrix.get(k).getTarget();
+        return predicTrain(k) - this.trainVectorMatrix.get(k).getTarget();
     }
 
     /**
@@ -326,7 +345,7 @@ public class SupportVectorMachine {
     private double predicTrain(int k){
         double sum = 0.0;
         for (int i = 0; i < n; i++){
-            sum += alpha[i] * vectorMatrix.get(i).getTarget() * kernalClass.getKernalCatch(i,k);
+            sum += alpha[i] * trainVectorMatrix.get(i).getTarget() * kernalClass.getKernalCatch(i,k);
         }
         sum += this.b;
         return sum;
@@ -338,12 +357,19 @@ public class SupportVectorMachine {
     public double predict(VectorLine vectorLine){
         double sum = 0.0;
         for (int j = 0; j < n; j++) {
-            sum += alpha[j] * vectorMatrix.get(j).getTarget()* kernalClass.kernalFunction(vectorMatrix.get(j), vectorLine);
+            sum += alpha[j] * trainVectorMatrix.get(j).getTarget()* kernalClass.kernalFunction(trainVectorMatrix.get(j), vectorLine);
         }
         sum += b;
         return sum;
     }
 
+
+    /**
+     * 预测函数
+     */
+    public List<Double> predict(VectorMatrix vectorLines){
+        return vectorLines.stream().map(this::predict).collect(Collectors.toList());
+    }
 
     /**
      * 随机选择一个样本i2，但要求i1 != i2
@@ -374,21 +400,6 @@ public class SupportVectorMachine {
         return i2;
     }
 
-
-    /**
-     * 对两向量进行点积
-     * @param x1 x1
-     * @param x2 x2
-     * @return
-     */
-    private static double dot(VectorLine x1, VectorLine x2){
-        double sum = 0.0;
-        Set<Integer> intersectionNodeSet = Sets.intersection(x1.keySet(), x2.keySet());
-        for (Integer featureNodeIndex : intersectionNodeSet){
-            sum += x1.get(featureNodeIndex) *  x2.get(featureNodeIndex);
-        }
-        return sum;
-    }
 
     /**
      * 返回拉格朗日乘子得到支持向量
