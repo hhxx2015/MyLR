@@ -1,5 +1,6 @@
 package org.haohhxx.util.feature;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 
 /**
@@ -8,32 +9,49 @@ import java.util.LinkedHashMap;
  * 这里使用 Link Map 保证预测时 样本的顺序和特征文件中的一致
  *
  */
-public class RankVectorMatrixBuilder extends LinkedHashMap<Integer, VectorMatrix> {
+public class RankVectorMatrixBuilder extends LinkedHashMap<Integer, FeatureMatrix> {
 
-    private VectorMatrix vectorMatrix = new VectorMatrix();
+    private FeatureMatrix vectorMatrix = new FeatureMatrix();
 
-    public void add(String line){
+    public void add(String line,Class featureLine){
         //去掉注释
         line = line.split("#")[0];
         String [] ls = line.split("\\s");
+        int feanub = ls.length-1;
         double target = Double.parseDouble(ls[0]);
         int qid = Integer.parseInt(ls[1].split(":")[1]);
-        VectorLine vectorLine  = new VectorLine(target);
+        AbstractFeatureLine vectorLine = null;
+        try {
+            switch (featureLine.getName()){
+                case "org.haohhxx.util.feature.NormalFeatureLine":
+                    vectorLine = (NormalFeatureLine)featureLine.getDeclaredConstructor(double.class, int.class).newInstance(target, feanub);
+                    break;
+                case "org.haohhxx.util.feature.SparseFeatureLine":
+                    vectorLine = (SparseFeatureLine)featureLine.getDeclaredConstructor(double.class).newInstance(target);
+                    break;
+                default:
+                    vectorLine = (SparseFeatureLine)featureLine.getDeclaredConstructor(double.class).newInstance(target);
+                    break;
+            }
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
         for (int i = 2; i <ls.length ; i++) {
             String[] node = ls[i].split(":");
+            assert vectorLine != null;
             vectorLine.put(Integer.parseInt(node[0]),Double.parseDouble(node[1]));
         }
-        VectorMatrix qidVecLines = this.getOrDefault(qid, new VectorMatrix());
-        for(VectorLine qidVec:qidVecLines){
+        FeatureMatrix qidVecLines = this.getOrDefault(qid, new FeatureMatrix());
+        for(AbstractFeatureLine qidVec:qidVecLines){
             compare(qidVec,vectorLine);
         }
         qidVecLines.add(vectorLine);
         this.put(qid,qidVecLines);
     }
 
-    private void compare(VectorLine v1, VectorLine v2){
-        VectorLine vlineNew = v1.sub(v2);
-        VectorLine vlineNewS = v2.sub(v1);
+    private void compare(AbstractFeatureLine v1, AbstractFeatureLine v2){
+        AbstractFeatureLine vlineNew = v1.sub(v2);
+        AbstractFeatureLine vlineNewS = v2.sub(v1);
         if(v1.getTarget() > v2.getTarget()){
             vlineNew.setTarget(1);
             vlineNewS.setTarget(-1);
@@ -45,7 +63,7 @@ public class RankVectorMatrixBuilder extends LinkedHashMap<Integer, VectorMatrix
         vectorMatrix.add(vlineNewS);
     }
 
-    public VectorMatrix getVectorMatrix() {
+    public FeatureMatrix getVectorMatrix() {
         return vectorMatrix;
     }
 

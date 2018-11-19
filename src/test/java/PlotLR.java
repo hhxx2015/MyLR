@@ -34,12 +34,12 @@ import java.util.List;
 /**
  * @author Alex Black
  */
-public class PlotUtil {
+public class PlotLR {
 
 
     public static void main(String[] args) {
 
-        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\moon_data_train.csv";
+        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\linear_data_train.csv";
         FeatureMatrix trainData = new FeatureMatrix();
         List<String> lines = IteratorReader.getIteratorReader(trainpath).readLines();
 
@@ -51,8 +51,8 @@ public class PlotUtil {
             if(line.startsWith("0")){
                 line = line.replaceFirst("0","-1");
             }
-//            trainData.add(new SparseFeatureLine(FeatureLine.LineDataType.csv, line));
-            trainData.add(new NormalFeatureLine(FeatureLine.LineDataType.csv, line));
+            trainData.add(new SparseFeatureLine(FeatureLine.LineDataType.csv, line));
+//            trainData.add(new NormalFeatureLine(FeatureLine.LineDataType.csv, line));
 
             String ls[] = lines.get(i).split(",");
             features_double[i][0] = Double.parseDouble(ls[1]);
@@ -61,16 +61,9 @@ public class PlotUtil {
         }
 
         int iter = 10000;
-        double c = 10;
-        double sigma = 2;
+        double alpha = 0.1;
         //配置lr
-//        LogisticRegression lrh = new LogisticRegression(alpha);
-
-        SupportVectorMachine.KernalClass kernalFunction = new SupportVectorMachine.RBFKernal(sigma, trainData);
-//        SupportVectorMachine.KernalClass kernalFunction = new SupportVectorMachine.LinearKernal(trainData);
-//        SupportVectorMachine.LinearKernalNoCache kernalFunction = new SupportVectorMachine.LinearKernalNoCache(trainData);
-        SupportVectorMachine lrh = new SupportVectorMachine(c, kernalFunction);
-//        LogisticRegression lrh = new LogisticRegression(0.1);
+        LogisticRegression lrh = new LogisticRegression(alpha);
 
         lrh.fit(trainData, iter);
 //        List<Double> pred_list = lrh.predict(feas);
@@ -80,16 +73,15 @@ public class PlotUtil {
 
 
 
-    public static void printTrain(double features[][],double labels[] ,SupportVectorMachine lrh) {
-        double[]  alpha = lrh.getAlpha();
+    public static void printTrain(double features[][],double labels[] ,LogisticRegression lrh) {
 
-        double xMin = -1.6;
-        double xMax = 2.6;
-        double yMin = -1.1;
-        double yMax = 1.7;
+        double xMin = 0;
+        double xMax = 1.0;
+        double yMin = -0.2;
+        double yMax = 0.8;
 
         //Let's evaluate the predictions at every point in the x/y input space
-        int nPointsPerAxis = 300;
+        int nPointsPerAxis = 100;
         double[][] backgroundIn = new double[nPointsPerAxis*nPointsPerAxis][2];
         double backgroundOut[] = new double[nPointsPerAxis*nPointsPerAxis];
         int count = 0;
@@ -109,7 +101,7 @@ public class PlotUtil {
             }
         }
 
-        XYDataset c = createDataSetTrain(features, labels, alpha);
+        XYDataset c = createDataSetTrain(features, labels);
         XYZDataset backgroundData = createBackgroundData(backgroundIn, backgroundOut);
         double[] mins = new double[]{0.0,-0.2};
         double[] maxs = new double[]{1.0,0.8};
@@ -124,7 +116,7 @@ public class PlotUtil {
         f.setVisible(true);
     }
 
-    private static XYDataset createDataSetTrain(double[][] features, double[] labels,double[] alpha){
+    private static XYDataset createDataSetTrain(double[][] features, double[] labels){
         XYSeries[] series = new XYSeries[4];
         for( int i=0; i<series.length; i++){
             series[i] = new XYSeries("Class " + String.valueOf(i));
@@ -132,49 +124,14 @@ public class PlotUtil {
 
         int nRows = features.length;
         for( int i=0; i<nRows; i++ ){
-            if(alpha[i]>0&&labels[i]>0){
-                int classIdx = 2;
-                series[classIdx].add(features[i][0], features[i][1]);
-            }else if(alpha[i]>0&&labels[i]==0){
-                int classIdx = 3;
-                series[classIdx].add(features[i][0], features[i][1]);
-            }else {
-                int classIdx = (int)labels[i];
-                series[classIdx].add(features[i][0], features[i][1]);
-            }
-
+            int classIdx = (int)labels[i];
+            series[classIdx].add(features[i][0], features[i][1]);
         }
 
         XYSeriesCollection c = new XYSeriesCollection();
         for( XYSeries s : series){
             c.addSeries(s);
         }
-        return c;
-    }
-
-    //Test data
-    private static XYDataset createDataSetTest(double[][] features, double[] labels ,double[] predicted ){
-        int nRows = features.length;
-        int nClasses = 2;
-
-        XYSeries[] series = new XYSeries[nClasses*nClasses];    //new XYSeries("Data");
-        for( int i=0; i<nClasses*nClasses; i++){
-            int trueClass = i/nClasses;
-            int predClass = i%nClasses;
-            String label = "actual=" + trueClass + ", pred=" + predClass;
-            series[i] = new XYSeries(label);
-        }
-
-        for( int i=0; i<nRows; i++ ){
-            int classIdx = (int)labels[i];
-            int predIdx = (int)predicted[i];
-            int idx = classIdx * nClasses + predIdx;
-            series[idx].add(features[i][0], features[i][1]);
-        }
-
-
-        XYSeriesCollection c = new XYSeriesCollection();
-        for( XYSeries s : series) c.addSeries(s);
         return c;
     }
 

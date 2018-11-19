@@ -1,9 +1,9 @@
 import org.haohhxx.util.MapUtil;
 import org.haohhxx.util.core.svm.SupportVectorMachine;
 import org.haohhxx.util.eval.NDCG;
+import org.haohhxx.util.feature.FeatureMatrix;
+import org.haohhxx.util.feature.NormalFeatureLine;
 import org.haohhxx.util.feature.RankVectorMatrixBuilder;
-import org.haohhxx.util.feature.VectorLine;
-import org.haohhxx.util.feature.VectorMatrix;
 import org.haohhxx.util.io.IteratorReader;
 
 import java.util.*;
@@ -12,28 +12,31 @@ public class TestRank {
 
     public static void main(String[] args) {
 
-        String trainFilePath = "K:/数据/MQ2008/Fold1/vali.txt";
+        String trainFilePath = "K:/数据/MQ2008/Fold1/train.txt";
         String valFilePath = "K:/数据/MQ2008/Fold1/vali.txt";
 
-        VectorMatrix trainData = VectorMatrix.loadSampleSVMRankFile(trainFilePath);
+        FeatureMatrix trainData = FeatureMatrix.loadSampleSVMRankDataFile(trainFilePath, NormalFeatureLine.class);
 
-        trainData = trainData.cut(0,100);
-        int iter = 100;
-        double c = 10;
+        trainData = trainData.cut(0,10000);
+        int iter = 1000;
+        double c = 0.001;
         double sigma = 2;
 
-//        SupportVectorMachine.LinearKernalNoCache kernalFunction = new SupportVectorMachine.LinearKernalNoCache(trainData);
-        SupportVectorMachine.LinearKernal kernalFunction = new SupportVectorMachine.LinearKernal(trainData);
+        SupportVectorMachine.LinearKernalNoCache kernalFunction = new SupportVectorMachine.LinearKernalNoCache(trainData);
+//        SupportVectorMachine.LinearKernal kernalFunction = new SupportVectorMachine.LinearKernal(trainData);
         SupportVectorMachine svm = new SupportVectorMachine(c, kernalFunction);
 
         svm.fit(trainData,iter);
 
-        RankVectorMatrixBuilder rankVectorMatrixBuilder = VectorMatrix.rankVectorMatrixBuilder();
-        IteratorReader.getIteratorReader(valFilePath).forEach(rankVectorMatrixBuilder::add);
-        //各个qid 要分开评价
-        for (Map.Entry<Integer,VectorMatrix> qidRank : rankVectorMatrixBuilder.entrySet()){
+        RankVectorMatrixBuilder rankVectorMatrixBuilder = FeatureMatrix.rankVectorMatrixBuilder();
+        IteratorReader.getIteratorReader(valFilePath)
+                .forEach(line -> rankVectorMatrixBuilder.add(line,NormalFeatureLine.class));
+
+
+        double totalNDCG = 0.0;
+        for (Map.Entry<Integer,FeatureMatrix> qidRank : rankVectorMatrixBuilder.entrySet()){
             int qid = qidRank.getKey();
-            VectorMatrix vectorLines = qidRank.getValue();
+            FeatureMatrix vectorLines = qidRank.getValue();
             List<Double> preList = svm.predict(vectorLines);
             List<Double> yList = vectorLines.getTargetList();
 
@@ -47,8 +50,12 @@ public class TestRank {
                 pre.add(yList.get(i));
             }
 
-            double ndcgScore = NDCG.evalNDCG(new ArrayList<>(pre), 10);
-            System.out.println(qid+"\t"+ndcgScore);
+            double ndcgScore = NDCG.evalNDCG(new ArrayList<>(pre), 5);
+            totalNDCG += ndcgScore;
+//            System.out.println(qid+"\t"+ndcgScore);
         }
+
+        System.out.println(totalNDCG/rankVectorMatrixBuilder.size());
+
     }
 }

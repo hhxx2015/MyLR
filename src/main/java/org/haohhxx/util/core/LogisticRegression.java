@@ -1,7 +1,9 @@
 package org.haohhxx.util.core;
 
+import org.haohhxx.util.feature.AbstractFeatureLine;
+import org.haohhxx.util.feature.FeatureMatrix;
+import org.haohhxx.util.feature.SparseFeatureLine;
 import org.haohhxx.util.feature.VectorLine;
-import org.haohhxx.util.feature.VectorMatrix;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,7 @@ public class LogisticRegression {
 
     private final Random random = new Random();
     private double alpha;
-    private VectorLine weightMap = new VectorLine();
+    private SparseFeatureLine weightMap = new SparseFeatureLine();
     private Map<Integer,Double> maxValMap = new HashMap<>();
     private Map<Integer,Double> minValMap = new HashMap<>();
 
@@ -28,7 +30,7 @@ public class LogisticRegression {
      * @param itea     迭代次数
      * @param features 实例数组
      */
-    public void fit(int itea, VectorMatrix features) {
+    public void fit(FeatureMatrix features, int itea) {
 
         int m = features.size();
         this.maxValMap = features.getMax();
@@ -41,15 +43,15 @@ public class LogisticRegression {
               梯度下降  全部数据迭代一次后更新 weight
              */
             for (int i = 0; i < m ; i++){
-                VectorLine xi = features.get(i);
+                AbstractFeatureLine xi = features.get(i);
                 double predict = predict(xi);
                 predictCache.put(i, predict);
             }
 
-            for (Integer j : weightMap.keySet()) {
+            for (Integer j : weightMap.vectorLine.keySet()) {
                 double gradient = 0.0;
                 for (int i = 0; i < m; i++) {
-                    VectorLine xi = features.get(i);
+                    AbstractFeatureLine xi = features.get(i);
                     double yi = xi.getTarget();
 
                     Double predict = predictCache.get(i);
@@ -81,29 +83,23 @@ public class LogisticRegression {
     }
 
 
-    public Double predict(VectorLine featureLine) {
+    public Double predict(AbstractFeatureLine featureLine) {
 
         /*
            bias
          */
-        if (!featureLine.containsKey(-1)) {
-            featureLine.put(-1, 0.5);
-        }
+//        if (!featureLine.containsKey(-1)) {
+//            featureLine.put(-1, 0.5);
+//        }
 
-        double logit = 0.0;
-        for (Map.Entry<Integer,Double> featureNode : featureLine.entrySet()) {
-            Integer featureIndex = featureNode.getKey();
-            Double featureValue = featureNode.getValue();
-            featureValue = this.maxminum(featureIndex, featureValue);
-
-            weightMap.computeIfAbsent(featureIndex,k-> random.nextDouble());
-            Double weightValue = weightMap.get(featureIndex);
-            logit += (featureValue * weightValue);
-        }
+        /**
+         * weight 初始化
+         */
+        double logit = featureLine.dot(weightMap);
         return sigmoid(logit);
     }
 
-    public List<Double> predict(VectorMatrix features) {
+    public List<Double> predict(FeatureMatrix features) {
         return features.stream()
                 .map(this::predict)
                 .collect(Collectors.toList());

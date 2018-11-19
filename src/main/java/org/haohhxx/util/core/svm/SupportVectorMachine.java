@@ -1,27 +1,42 @@
 package org.haohhxx.util.core.svm;
 
-import com.google.common.collect.Sets;
-import org.haohhxx.util.feature.VectorLine;
-import org.haohhxx.util.feature.VectorMatrix;
-
+import org.haohhxx.util.feature.AbstractFeatureLine;
+import org.haohhxx.util.feature.FeatureMatrix;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author zhenyuan_hao@163.com
+ *
+ * https://blog.csdn.net/maoersong/article/details/24315633
+ *
  */
 public class SupportVectorMachine {
 
     public interface KernalClass {
+
+        /**
+         * 核方法  处理一对样本
+         * @param vectorLine1 x1
+         * @param vectorLine2 x2
+         * @return kernalVal
+         */
+        double kernalFunction(AbstractFeatureLine vectorLine1, AbstractFeatureLine vectorLine2);
+
+        /**
+         * 核方法  训练时调用的核方法，用于事先缓存加速
+         * @param i1 x1
+         * @param i2 x2
+         * @return kernalVal
+         */
         double getKernalCatch(int i1,int i2);
-        double kernalFunction(VectorLine vectorLine1, VectorLine vectorLine2);
     }
 
     public static class LinearKernalNoCache implements KernalClass{
 
-        private VectorMatrix vectorMatrix;
+        private FeatureMatrix vectorMatrix;
 
-        public LinearKernalNoCache(VectorMatrix vectorMatrix){
+        public LinearKernalNoCache(FeatureMatrix vectorMatrix){
             this.vectorMatrix = vectorMatrix;
         }
 
@@ -31,7 +46,7 @@ public class SupportVectorMachine {
         }
 
         @Override
-        public double kernalFunction(VectorLine x1, VectorLine x2) {
+        public double kernalFunction(AbstractFeatureLine x1, AbstractFeatureLine x2) {
             return x1.dot(x2);
         }
     }
@@ -40,7 +55,7 @@ public class SupportVectorMachine {
 
         private Map<String,Double> kernelCache;
 
-        public LinearKernal(VectorMatrix vectorMatrix){
+        public LinearKernal(FeatureMatrix vectorMatrix){
             int n = vectorMatrix.size();
             this.kernelCache = new HashMap<>(n);
             for (int i =  0; i < n; i++){
@@ -57,7 +72,7 @@ public class SupportVectorMachine {
         }
 
         @Override
-        public double kernalFunction(VectorLine x1, VectorLine x2) {
+        public double kernalFunction(AbstractFeatureLine x1, AbstractFeatureLine x2) {
             return x1.dot(x2);
         }
     }
@@ -66,7 +81,7 @@ public class SupportVectorMachine {
         private double sigma;
         private double[][] kernelCache;
 
-        public RBFKernal(double sigma, VectorMatrix vectorMatrix){
+        public RBFKernal(double sigma, FeatureMatrix vectorMatrix){
             this.sigma = sigma;
             int n = vectorMatrix.size();
             this.kernelCache = new double[n][n];
@@ -84,7 +99,7 @@ public class SupportVectorMachine {
         }
 
         @Override
-        public double kernalFunction(VectorLine x1, VectorLine x2) {
+        public double kernalFunction(AbstractFeatureLine x1, AbstractFeatureLine x2) {
             double i1i2 = x1.dot(x2);
             double i1i1 = x1.pow2();
             double i2i2 = x2.pow2();
@@ -94,6 +109,10 @@ public class SupportVectorMachine {
     }
 
     private double b = 0.0;
+
+    /**
+     * 样本数量
+     */
     private int n = 0;
 
     private double c;
@@ -105,7 +124,7 @@ public class SupportVectorMachine {
 
     private final Random random;
 
-    private VectorMatrix trainVectorMatrix;
+    private FeatureMatrix trainVectorMatrix;
 
     private KernalClass kernalClass;
 
@@ -117,50 +136,58 @@ public class SupportVectorMachine {
         this.c = c;
     }
 
-    private void fitInit(VectorMatrix vectorMatrix){
+    private void fitInit(FeatureMatrix vectorMatrix){
         this.trainVectorMatrix = vectorMatrix;
         this.n = vectorMatrix.size();
         this.alpha = new double[n];
         this.errorCache = new double[n];
     }
 
-    public void fit(VectorMatrix vectorMatrix, int epoch) {
+    public void fit(FeatureMatrix vectorMatrix, int epoch) {
         this.fitInit(vectorMatrix);
         int epochNub = 0;
-        int numChanged = 0;
+        int alphaPairsChanged  = 0;
         boolean examineAll = true;
 
         //当迭代次数大于maxIter或者 所有样本中没有alpha对改变时，跳出循环
-        while((epochNub < epoch) && (numChanged > 0 || examineAll)){
-            numChanged = 0;
-
+        while((epochNub < epoch) && (alphaPairsChanged  > 0 || examineAll)){
+            alphaPairsChanged  = 0;
             if (examineAll) {
                 //循环检查所有样本
                 for (int i = 0; i < n; i++) {
                     if (examineExample(i)) {
-                        numChanged ++;
+                        alphaPairsChanged ++;
                     }
                 }
+                epochNub ++;
             }else{
                 //只检查非边界样本
                 for (int i = 0; i < n; i++) {
-                    if (alpha[i] != 0 && alpha[i] != c) {
+//                    if (alpha[i] != 0 && alpha[i] != c) {
+                    if (alpha[i] > 0 && alpha[i] < c) {
                         if (examineExample(i)) {
-                            numChanged ++;
+                            alphaPairsChanged  ++;
                         }
                     }
                 }
+                epochNub ++;
             }
-            epochNub ++;
+
+            //如果找到alpha对，就优化非边界alpha值，否则，就重新进行寻找，如果寻找一遍 遍历所有的行还是没找到，就退出循环。
             if (examineAll) {
                 examineAll = false;
-            }else if (numChanged == 0) {
+            }else if (alphaPairsChanged == 0) {
                 examineAll = true;
             }
         }
-
     }
 
+    /**
+     * Platt SMO
+     *
+     * @param i1
+     * @return
+     */
     private boolean examineExample(int i1){
         double y1 = trainVectorMatrix.get(i1).getTarget();
         double alpha1 = alpha[i1];
@@ -169,7 +196,7 @@ public class SupportVectorMachine {
         if (0 < alpha1 && alpha1 < c) {
             E1 = errorCache[i1];
         }else{
-            E1 = calcError(i1);
+            E1 = calcErrorCatch(i1);
         }
 
         /*
@@ -180,6 +207,7 @@ public class SupportVectorMachine {
         double r1 = y1 * E1;
         if ((r1 < -tolerance && alpha1 < c) || (r1 > tolerance && alpha1 > 0)) {
             //选择 E1 - E2 差最大的两点
+            //选择最大的误差对应的j进行优化。效果更明显
             int i2 = this.getMaxJ(E1);
             if (i2 >= 0) {
                 if (takeStep(i1, i2)) {
@@ -236,13 +264,13 @@ public class SupportVectorMachine {
         if (0 < alpha1 && alpha1 < c) {
             E1 = errorCache[i1];
         }else{
-            E1 = calcError(i1);
+            E1 = calcErrorCatch(i1);
         }
 
         if (0 < alpha2 && alpha2 < c) {
             E2 = errorCache[i2];
         }else{
-            E2 = calcError(i2);
+            E2 = calcErrorCatch(i2);
         }
 
         if (y1 != y2) {
@@ -259,7 +287,8 @@ public class SupportVectorMachine {
         double k11 = kernalClass.getKernalCatch(i1,i1);
         double k12 = kernalClass.getKernalCatch(i1,i2);
         double k22 = kernalClass.getKernalCatch(i2,i2);
-
+        // eta是alphas[j]的最优修改量，如果eta==0，需要退出for循环的当前迭代过程
+        // 参考《统计学习方法》李航-P125~P128<序列最小最优化算法>
         double eta = 2 * k12 - k11 - k22;
         //根据不同情况计算出a2
         if (eta < 0) {
@@ -304,7 +333,12 @@ public class SupportVectorMachine {
             a1 = c;
         }
 
-        //update threshold b;
+        /*
+            在对alpha[i], alpha[j] 进行优化之后，给这两个alpha值设置一个常数b。
+            w= Σ[1~n] ai*yi*xi => b = yi- Σ[1~n] ai*yi(xi*xj)
+            所以：  b1 - b = (y1-y) - Σ[1~n] yi*(a1-a)*(xi*x1)
+            为什么减2遍？ 因为是 减去Σ[1~n]，正好2个变量i和j，所以减2遍
+         */
         double b1 = b - E1 - y1 * (a1 - alpha1) * k11 - y2 * (a2 - alpha2) * k12;
         double b2 = b - E2 - y1 * (a1 - alpha1) * k12 - y2 * (a2 - alpha2) * k22;
 
@@ -319,9 +353,9 @@ public class SupportVectorMachine {
         }
 //		deltaB = bNew - this.b; //b的增量
         this.b = bNew;
-        //update error cache
-        this.errorCache[i1] = calcError(i1);
-        this.errorCache[i2] = calcError(i2);
+        // 更新误差缓存
+        this.errorCache[i1] = calcErrorCatch(i1);
+        this.errorCache[i2] = calcErrorCatch(i2);
         //store a1, a2 in alpha array
         alpha[i1] = a1;
         alpha[i2] = a2;
@@ -330,10 +364,11 @@ public class SupportVectorMachine {
 
     /**
      * 计算误差公式： error = ∑a[i]*y[i]*k(x,x[i]) - y[i]
+     * 预测值 减去 目标值
      * @param k
      * @return
      */
-    private double calcError(int k){
+    private double calcErrorCatch(int k){
         return predicTrain(k) - this.trainVectorMatrix.get(k).getTarget();
     }
 
@@ -354,7 +389,7 @@ public class SupportVectorMachine {
     /**
      * 预测函数
      */
-    public double predict(VectorLine vectorLine){
+    public double predict(AbstractFeatureLine vectorLine){
         double sum = 0.0;
         for (int j = 0; j < n; j++) {
             sum += alpha[j] * trainVectorMatrix.get(j).getTarget()* kernalClass.kernalFunction(trainVectorMatrix.get(j), vectorLine);
@@ -367,7 +402,7 @@ public class SupportVectorMachine {
     /**
      * 预测函数
      */
-    public List<Double> predict(VectorMatrix vectorLines){
+    public List<Double> predict(FeatureMatrix vectorLines){
         return vectorLines.stream().map(this::predict).collect(Collectors.toList());
     }
 
@@ -399,7 +434,6 @@ public class SupportVectorMachine {
         }
         return i2;
     }
-
 
     /**
      * 返回拉格朗日乘子得到支持向量
