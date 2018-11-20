@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
  * @author zhenyuan_hao@163.com
  *
  * https://blog.csdn.net/maoersong/article/details/24315633
- *
+ * https://github.com/apachecn/AiLearning/blob/dev/src/py3.x/ml/6.SVM/svm-complete.py
+ * https://github.com/yinchuandong/SMO4SVM
  */
 public class SupportVectorMachine {
 

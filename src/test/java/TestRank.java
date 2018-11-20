@@ -22,8 +22,8 @@ public class TestRank {
         double c = 0.001;
         double sigma = 2;
 
-        SupportVectorMachine.LinearKernalNoCache kernalFunction = new SupportVectorMachine.LinearKernalNoCache(trainData);
-//        SupportVectorMachine.LinearKernal kernalFunction = new SupportVectorMachine.LinearKernal(trainData);
+//        SupportVectorMachine.LinearKernalNoCache kernalFunction = new SupportVectorMachine.LinearKernalNoCache(trainData);
+        SupportVectorMachine.LinearKernal kernalFunction = new SupportVectorMachine.LinearKernal(trainData);
         SupportVectorMachine svm = new SupportVectorMachine(c, kernalFunction);
 
         svm.fit(trainData,iter);

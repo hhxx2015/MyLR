@@ -93,7 +93,7 @@ public class LogisticRegression {
 //        }
 
         /**
-         * weight 初始化
+         * todo weight 初始化
          */
         double logit = featureLine.dot(weightMap);
         return sigmoid(logit);

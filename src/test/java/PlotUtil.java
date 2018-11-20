@@ -39,7 +39,8 @@ public class PlotUtil {
 
     public static void main(String[] args) {
 
-        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\moon_data_train.csv";
+//        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\moon_data_train.csv";
+        String trainpath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\saturn_data_train.csv";
         FeatureMatrix trainData = new FeatureMatrix();
         List<String> lines = IteratorReader.getIteratorReader(trainpath).readLines();
 
@@ -61,7 +62,7 @@ public class PlotUtil {
         }
 
         int iter = 10000;
-        double c = 10;
+        double c = 1;
         double sigma = 2;
         //配置lr
 //        LogisticRegression lrh = new LogisticRegression(alpha);
@@ -83,10 +84,15 @@ public class PlotUtil {
     public static void printTrain(double features[][],double labels[] ,SupportVectorMachine lrh) {
         double[]  alpha = lrh.getAlpha();
 
-        double xMin = -1.6;
-        double xMax = 2.6;
-        double yMin = -1.1;
-        double yMax = 1.7;
+//        double xMin = -1.6;
+//        double xMax = 2.6;
+//        double yMin = -1.1;
+//        double yMax = 1.7;
+
+        double xMin = -12.6;
+        double xMax = 12.6;
+        double yMin = -12.1;
+        double yMax = 12.7;
 
         //Let's evaluate the predictions at every point in the x/y input space
         int nPointsPerAxis = 300;
@@ -105,14 +111,15 @@ public class PlotUtil {
                 vectorLine.put(0,x);
                 vectorLine.put(1,y);
                 backgroundOut[count] = lrh.predict(vectorLine) + 1.0;
+                System.out.println(backgroundOut[count]);
                 count++;
             }
         }
 
         XYDataset c = createDataSetTrain(features, labels, alpha);
         XYZDataset backgroundData = createBackgroundData(backgroundIn, backgroundOut);
-        double[] mins = new double[]{0.0,-0.2};
-        double[] maxs = new double[]{1.0,0.8};
+        double[] mins = new double[]{xMin,yMin};
+        double[] maxs = new double[]{xMax,yMax};
         JFreeChart j = createChart(backgroundData, mins, maxs, nPointsPerAxis, c);
 
         JPanel panel = new ChartPanel(j);
