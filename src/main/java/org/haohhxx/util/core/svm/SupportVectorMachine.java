@@ -78,6 +78,32 @@ public class SupportVectorMachine {
         }
     }
 
+    public static class RBFKernalNoCatch implements KernalClass{
+        private double sigma;
+        private FeatureMatrix vectorMatrix;
+
+        public RBFKernalNoCatch(double sigma, FeatureMatrix vectorMatrix){
+            this.sigma = sigma;
+            this.vectorMatrix = vectorMatrix;
+        }
+
+        @Override
+        public double getKernalCatch(int i1,int i2) {
+            return kernalFunction(vectorMatrix.get(i1),vectorMatrix.get(i2));
+        }
+
+        @Override
+        public double kernalFunction(AbstractFeatureLine x1, AbstractFeatureLine x2) {
+            double i1i2 = x1.dot(x2);
+            double i1i1 = x1.pow2();
+            double i2i2 = x2.pow2();
+            return Math.exp(- (i1i1 + i2i2 - 2 * i1i2) / (2 * Math.pow(sigma,2)));
+        }
+
+    }
+
+
+
     public static class RBFKernal implements KernalClass{
         private double sigma;
         private double[][] kernelCache;
