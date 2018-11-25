@@ -40,6 +40,7 @@ HingeLoss
 
 但0/1损失不易于直接求解<del>(数学性质不好、非凸、非连续、总之大佬都说不好)</del>
 
+关于损失函数的选择可以看一下李宏毅机器学习(2017)的第二十课SVM [bilibili av10590361](https://www.bilibili.com/video/av10590361/?p=31)
 因此需要采用合页损失函数<a href="https://www.codecogs.com/eqnedit.php?latex=loss_{hinge}=max(0,1-\widehat{y})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?loss_{hinge}=max(0,1-\widehat{y})" title="loss_{hinge}=max(0,1-\widehat{y})" /></a>。
 
 使用合页损失函数的SVM优化目标可以表示为：
