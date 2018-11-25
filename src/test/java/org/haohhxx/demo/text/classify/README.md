@@ -3,6 +3,7 @@
 
 在样本组成的特征空间中可以通过线性方程$$w^{T}x+b=0$$描述分类平面(超平面)与样本之间的关系。$$w$$表示法向量，表示超平面的方向;$$b$$是偏移量，表示超平面到样本$$x$$之间的距离。若超平面可以使全部的样本正确分类，则有
 <a href="https://www.codecogs.com/eqnedit.php?latex=$$\left\{\begin{matrix}w^{T}x_{i}&plus;b\geq&plus;1,y_{i}=&plus;1\\&space;w^{T}x_{i}&plus;b\leq-1,y_{i}=-1\end{matrix}\right.$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\left\{\begin{matrix}w^{T}x_{i}&plus;b\geq&plus;1,y_{i}=&plus;1\\&space;w^{T}x_{i}&plus;b\leq-1,y_{i}=-1\end{matrix}\right.$$" title="$$\left\{\begin{matrix}w^{T}x_{i}+b\geq+1,y_{i}=+1\\ w^{T}x_{i}+b\leq-1,y_{i}=-1\end{matrix}\right.$$" /></a>
+
 其中距超平面最近的几个样本使以上等式成立，它们被称为“支持向量”。
 ![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/test/java/org/haohhxx/demo/text/classify/pic/margin.PNG)(图自《机器学习》P122)
 
