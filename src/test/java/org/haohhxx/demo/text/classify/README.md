@@ -55,7 +55,7 @@ HingeLoss
 
 SVM求解Platt SMO
 ----------------
-SMO算法可以读一下《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》
+SMO算法可以读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://github.com/hhxx2015/MyLR/blob/MyLR_v4/src/main/java/org/haohhxx/util/core/svm/smo-book.pdf)
 
 
 
