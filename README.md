@@ -8,9 +8,9 @@ java简单实现一些机器学习算法
 
 ~~SVM~~
 
-Rank-SVM
+~~Rank-SVM~~
 
-SVM(String Kernal)
+优化稀疏矩阵
 
 SVD
 

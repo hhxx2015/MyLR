@@ -13,7 +13,8 @@ public class TextClassifyDemo {
 
         FeatureMatrix allTrain = FeatureMatrix
                 .loadSampleSVMdataFile(svmFeaPath,SparseFeatureLine.class)
-                .cut(0,9337);//70 min
+//                .cut(0,9337)
+                ;//70 min
 
         double sigma = 0.91;
         double c = 50;
@@ -30,6 +31,11 @@ public class TextClassifyDemo {
 
         List<Double> pres = clf.predict(allTrain);
 
+
+        // 13min c=0.0003  70min c=50  9337条数据
+        // c=50 50000条数据
+
+        //14:49
     }
 
 }

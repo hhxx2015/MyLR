@@ -40,18 +40,20 @@ public class ExtractTFIDFFeature2Text {
                                 tfMap.put(term,tfVal);
                             });
 
+                    TreeMap<Integer,String> sortIndexMap = new TreeMap<>();
                     tfMap.forEach((term,tfVal)->{
-
                         if (inUseVocabList.contains(term)){
                             //+1 是防止 index是0的情况出现
                             int feaIndex = inUseVocabList.indexOf(term)+1;
                             double idfVal = idfMap.getOrDefault(term, 14.0);
                             double tfidf = tfVal * idfVal;
-                            tfidfFeatureWriter.write(feaIndex + ":"+String.format("%.2f",tfidf)+" ");
+                            sortIndexMap.put(feaIndex,String.format("%.2f",tfidf));
                         }
-
                     });
 
+                    sortIndexMap.forEach((k,v)->
+                            tfidfFeatureWriter.write(k + ":"+v+" ")
+                    );
                     tfidfFeatureWriter.write("\n");
                 });
     }
@@ -60,11 +62,11 @@ public class ExtractTFIDFFeature2Text {
         String negPath = "D:/data/t9.ohsumed91/neg.w.txt";
         String posPath = "D:/data/t9.ohsumed91/pos.w.txt";
 
-        String trainFilePath = "./text/train.svm.txt";
+        String trainFilePath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\text\\train.svm.sort.txt";
         HaoWriter tfidfFeatureWriter = new HaoWriter(trainFilePath);
 
-        String dfPath = "./text/df.txt";
-        String stopPath = "./text/stoplist.dft";
+        String dfPath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\text\\df.txt";
+        String stopPath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\text\\stoplist.dft";
 
         Set<String> stopSet = IteratorReader.getIteratorReader(stopPath).readHashSet();
         LinkedHashMap<String, Double> idfMap = loadIDFfile(dfPath);

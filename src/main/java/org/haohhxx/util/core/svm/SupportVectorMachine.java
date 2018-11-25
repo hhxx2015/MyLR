@@ -175,7 +175,14 @@ public class SupportVectorMachine {
      */
     private double eps;
 
+    /**
+     * 拉格朗日乘子
+     */
     private double[] alpha = null;
+
+    /**
+     * 缓存的 E 随迭代更新
+     */
     private double[] errorCache = null;
 
     private final Random random;
@@ -242,6 +249,7 @@ public class SupportVectorMachine {
      * Platt SMO
      *
      *  统计学习方法 P128 7.4.2章
+     *  Fast Training of Support Vector Machines using Sequential Minimal Optimization
      *
      * @param i1 i1
      * @return 是否优化
@@ -259,6 +267,7 @@ public class SupportVectorMachine {
 
         /*
             检验第一个点是否满足 KKT条件
+
             《统计学习方法》
                                 7.111
                                 7.112
@@ -267,6 +276,7 @@ public class SupportVectorMachine {
           yi*g(xi) >= 1 and alpha == 0 (正确分类)
           yi*g(xi) == 1 and 0 < alpha < C (在边界上的支持向量)
           yi*g(xi) <= 1 and alpha == C (在边界之间)
+
          */
         double r1 = y1 * E1;
         if ((r1 < -tolerance && alpha1 < c) || (r1 > tolerance && alpha1 > 0)) {
