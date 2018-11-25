@@ -7,7 +7,7 @@ import org.haohhxx.util.io.IteratorReader;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class idfFreqExtract {
+public class DFreqExtract {
 
     public static String[] tokenAna(String line){
         line = line.toLowerCase();

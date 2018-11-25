@@ -4,17 +4,18 @@ import org.haohhxx.util.io.HaoWriter;
 import org.haohhxx.util.io.IteratorReader;
 
 import java.util.*;
+import java.util.stream.Stream;
 
-public class extractTFIDFFeature2Text {
+public class ExtractTFIDFFeature2Text {
 
-    public static String[] tokenAna(String line){
+    private static String[] tokenAna(String line){
         line = line.toLowerCase();
         line = line.replaceAll("[\\,,\\.,\\(,\\)]"," ");
         String[] ls = line.split(" ");
         return ls;
     }
 
-    public static LinkedHashMap<String,Double> loadIDFfile(String dfPath){
+    private static LinkedHashMap<String,Double> loadIDFfile(String dfPath){
         LinkedHashMap<String,Double> idfMap = new LinkedHashMap<>();
         IteratorReader ir = IteratorReader.getIteratorReader(dfPath);
         for(String line : ir){
@@ -32,8 +33,8 @@ public class extractTFIDFFeature2Text {
                     tfidfFeatureWriter.write(target.trim()+" ");
 
                     Map<String,Double> tfMap = new HashMap<>();
-                    List<String> ls = Arrays.asList(tokenAna(line));
-                    ls.stream().filter(term -> !stopSet.contains(term))
+                    Stream.of(tokenAna(line))
+                            .filter(term -> !stopSet.contains(term))
                             .forEach(term ->{
                                 double tfVal = tfMap.getOrDefault(term,0.0)+1;
                                 tfMap.put(term,tfVal);

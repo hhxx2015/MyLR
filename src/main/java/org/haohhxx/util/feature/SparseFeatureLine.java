@@ -25,6 +25,10 @@ public class SparseFeatureLine extends AbstractFeatureLine{
         }
     }
 
+    public SparseFeatureLine(double target, int feanub){
+        this.target=target;
+    }
+
     public SparseFeatureLine(double target){
         this.target=target;
     }

@@ -24,13 +24,13 @@ public class RankVectorMatrixBuilder extends LinkedHashMap<Integer, FeatureMatri
         try {
             switch (featureLine.getName()){
                 case "org.haohhxx.util.feature.NormalFeatureLine":
-                    vectorLine = (NormalFeatureLine)featureLine.getDeclaredConstructor(double.class, int.class).newInstance(target, feanub);
+                    vectorLine = (AbstractFeatureLine)featureLine.getDeclaredConstructor(double.class, int.class).newInstance(target, feanub);
                     break;
                 case "org.haohhxx.util.feature.SparseFeatureLine":
-                    vectorLine = (SparseFeatureLine)featureLine.getDeclaredConstructor(double.class).newInstance(target);
+                    vectorLine = (AbstractFeatureLine)featureLine.getDeclaredConstructor(double.class, int.class).newInstance(target, feanub);
                     break;
                 default:
-                    vectorLine = (SparseFeatureLine)featureLine.getDeclaredConstructor(double.class).newInstance(target);
+                    vectorLine = (AbstractFeatureLine)featureLine.getDeclaredConstructor(double.class, int.class).newInstance(target, feanub);
                     break;
             }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

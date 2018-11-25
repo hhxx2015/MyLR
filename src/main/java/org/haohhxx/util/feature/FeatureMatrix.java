@@ -2,6 +2,7 @@ package org.haohhxx.util.feature;
 
 import org.haohhxx.util.io.IteratorReader;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,5 +69,26 @@ public class FeatureMatrix extends ArrayList<AbstractFeatureLine> {
         IteratorReader.getIteratorReader(filePath).forEach(line -> rankVectorMatrixBuilder.add(line,featureType));
         return rankVectorMatrixBuilder.getVectorMatrix();
     }
+
+    public static FeatureMatrix loadSampleSVMdataFile(String svmFeaPath, Class featureType){
+        FeatureMatrix allTrain = new FeatureMatrix();
+
+            IteratorReader.getIteratorReader(svmFeaPath).forEach(
+                    line ->{
+                        try{
+                                AbstractFeatureLine vectorLine = (AbstractFeatureLine)featureType
+                                        .getDeclaredConstructor(FeatureLine.LineDataType.class, String.class)
+                                        .newInstance(FeatureLine.LineDataType.svm, line);
+                                allTrain.add(vectorLine);
+
+                        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+
+        return allTrain;
+    }
+
 
 }

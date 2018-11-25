@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  */
 public class SupportVectorMachine {
 
+
     public interface KernalClass {
 
         /**
@@ -32,6 +33,23 @@ public class SupportVectorMachine {
          */
         double getKernalCatch(int i1,int i2);
     }
+
+    /**
+     * todo sigmoid kernal
+     */
+    public static class SigmoidKernalNoCatch implements KernalClass{
+
+        @Override
+        public double kernalFunction(AbstractFeatureLine vectorLine1, AbstractFeatureLine vectorLine2) {
+            return 0;
+        }
+
+        @Override
+        public double getKernalCatch(int i1, int i2) {
+            return 0;
+        }
+    }
+
 
     public static class LinearKernalNoCache implements KernalClass{
 
@@ -268,7 +286,7 @@ public class SupportVectorMachine {
     }
 
     /**
-     * 内循环，选择最大步长的两个点进行优化
+     * 优化步骤
      * @param i1 i1
      * @param i2 i2
      * @return boolean
@@ -285,7 +303,7 @@ public class SupportVectorMachine {
         double E1 = 0;
         double E2 = 0;
         double s = y1 * y2;
-        double a1, a2; //新的a
+        double alpha1new, alpha2new; //新的a
         double L, H;
 
         if (0 < alpha1 && alpha1 < c) {
@@ -300,6 +318,9 @@ public class SupportVectorMachine {
             E2 = calcErrorCatch(i2);
         }
 
+        /*
+            统计学习方法P126
+         */
         if (y1 != y2) {
             L = Math.max(0, alpha2 - alpha1);
             H = Math.min(c, c + alpha2 - alpha1);
@@ -320,13 +341,13 @@ public class SupportVectorMachine {
         //根据不同情况计算出a2
         if (eta < 0) {
             //计算非约束条件下的最大值
-            a2 = alpha2 - y2 * (E1 - E2) / eta;
+            alpha2new = alpha2 - y2 * (E1 - E2) / eta;
 
             //判断约束的条件
-            if (a2 < L) {
-                a2 = L;
-            } else if (a2 > H) {
-                a2 = H;
+            if (alpha2new < L) {
+                alpha2new = L;
+            } else if (alpha2new > H) {
+                alpha2new = H;
             }
         }else {
             double c1 = eta / 2;
@@ -337,27 +358,27 @@ public class SupportVectorMachine {
             double Hobj = c1 * H * H + c2 * H;
 
             if (Lobj > Hobj + eps) {
-                a2 = L;
+                alpha2new = L;
             }else if (Lobj < Hobj - eps) {
-                a2 = H;
+                alpha2new = H;
             } else {
-                a2 = alpha2;
+                alpha2new = alpha2;
             }
         }
 
-        if (Math.abs(a2 - alpha2) < eps * (a2 + alpha2 + eps)) {
+        if (Math.abs(alpha2new - alpha2) < eps * (alpha2new + alpha2 + eps)) {
             return false;
         }
 
         //通过a2来更新a1
-        a1 = alpha1 + s * (alpha2 - a2);
+        alpha1new = alpha1 + s * (alpha2 - alpha2new);
 
-        if (a1 < 0) {
-            a2 += s * a1;
-            a1 = 0;
-        }else if (a1 > c) {
-            a2 += s * (a1 - c);
-            a1 = c;
+        if (alpha1new < 0) {
+            alpha2new += s * alpha1new;
+            alpha1new = 0;
+        }else if (alpha1new > c) {
+            alpha2new += s * (alpha1new - c);
+            alpha1new = c;
         }
 
         /*
@@ -366,14 +387,14 @@ public class SupportVectorMachine {
             所以：  b1 - b = (y1-y) - Σ[1~n] yi*(a1-a)*(xi*x1)
             为什么减2遍？ 因为是 减去Σ[1~n]，正好2个变量i和j，所以减2遍
          */
-        double b1 = b - E1 - y1 * (a1 - alpha1) * k11 - y2 * (a2 - alpha2) * k12;
-        double b2 = b - E2 - y1 * (a1 - alpha1) * k12 - y2 * (a2 - alpha2) * k22;
+        double b1 = b - E1 - y1 * (alpha1new - alpha1) * k11 - y2 * (alpha2new - alpha2) * k12;
+        double b2 = b - E2 - y1 * (alpha1new - alpha1) * k12 - y2 * (alpha2new - alpha2) * k22;
 
         double bNew = 0;
 //		double deltaB = 0;
-        if (0 < a1 && a1 < c) {
+        if (0 < alpha1new && alpha1new < c) {
             bNew = b1;
-        }else if (0 < a2 && a2 < c) {
+        }else if (0 < alpha2new && alpha2new < c) {
             bNew = b2;
         }else {
             bNew = (b1 + b2) / 2;
@@ -384,8 +405,8 @@ public class SupportVectorMachine {
         this.errorCache[i1] = calcErrorCatch(i1);
         this.errorCache[i2] = calcErrorCatch(i2);
         //store a1, a2 in alpha array
-        alpha[i1] = a1;
-        alpha[i2] = a2;
+        alpha[i1] = alpha1new;
+        alpha[i2] = alpha2new;
         return true;
     }
 
