@@ -10,9 +10,9 @@ public class PrepareData {
     }
 
     public static void prepareOhsumedData() {
-        String ohsPath = "C:\\data\\ohsumed.91\\ohsumed.91";
-        String n_formatDataPath = "C:\\data\\ohsumed.91\\neg.w.txt";
-        String p_formatDataPath = "C:\\data\\ohsumed.91\\pos.w.txt";
+        String ohsPath = "D:/data/t9.ohsumed91/ohsumed.91";
+        String n_formatDataPath = "D:/data/t9.ohsumed91/neg.w.txt";
+        String p_formatDataPath = "D:/data/t9.ohsumed91/pos.w.txt";
 
         HaoWriter nhw = new HaoWriter(n_formatDataPath);
         HaoWriter phw = new HaoWriter(p_formatDataPath);

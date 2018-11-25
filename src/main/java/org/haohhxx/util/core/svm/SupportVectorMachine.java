@@ -160,8 +160,19 @@ public class SupportVectorMachine {
      */
     private int n = 0;
 
+    /**
+     * 惩罚因子
+     */
     private double c;
+
+    /**
+     * 松弛变量
+     */
     private double tolerance;
+
+    /**
+     * 终止条件的差值
+     */
     private double eps;
 
     private double[] alpha = null;
@@ -230,8 +241,10 @@ public class SupportVectorMachine {
     /**
      * Platt SMO
      *
-     * @param i1
-     * @return
+     *  统计学习方法 P128 7.4.2章
+     *
+     * @param i1 i1
+     * @return 是否优化
      */
     private boolean examineExample(int i1){
         double y1 = trainVectorMatrix.get(i1).getTarget();
@@ -245,9 +258,15 @@ public class SupportVectorMachine {
         }
 
         /*
-         * yi*f(i) >= 1 and alpha == 0 (正确分类)
-         * yi*f(i) == 1 and 0<alpha < C (在边界上的支持向量)
-         * yi*f(i) <= 1 and alpha == C (在边界之间)
+            检验第一个点是否满足 KKT条件
+            《统计学习方法》
+                                7.111
+                                7.112
+                                7.113
+
+          yi*g(xi) >= 1 and alpha == 0 (正确分类)
+          yi*g(xi) == 1 and 0 < alpha < C (在边界上的支持向量)
+          yi*g(xi) <= 1 and alpha == C (在边界之间)
          */
         double r1 = y1 * E1;
         if ((r1 < -tolerance && alpha1 < c) || (r1 > tolerance && alpha1 > 0)) {
@@ -261,6 +280,7 @@ public class SupportVectorMachine {
             }
 
             //先选择 0 < alpha < C的点
+            //loop over all non-zero and non-C alpha, starting at random point
             int k0 = randomSelect(i1);
             for (int k = k0; k < n + k0; k++) {
                 i2 = k % n;
@@ -272,6 +292,7 @@ public class SupportVectorMachine {
             }
 
             //如果不符合，再遍历全部点
+            //loop over all possible i1, starting at a random point
             k0 = randomSelect(i1);
             for (int k = k0; k < n + k0; k++) {
                 i2 = k % n;
@@ -279,9 +300,7 @@ public class SupportVectorMachine {
                     return true;
                 }
             }
-
         }
-
         return false;
     }
 
@@ -295,16 +314,16 @@ public class SupportVectorMachine {
         if (i1 == i2){
             return false;
         }
-
         double alpha1 = alpha[i1];
         double alpha2 = alpha[i2];
         double y1 = trainVectorMatrix.get(i1).getTarget();
         double y2 = trainVectorMatrix.get(i2).getTarget();
         double E1 = 0;
         double E2 = 0;
-        double s = y1 * y2;
+        double y1y2 = y1 * y2;
         double alpha1new, alpha2new; //新的a
-        double L, H;
+        double L; //下界
+        double H; //上界
 
         if (0 < alpha1 && alpha1 < c) {
             E1 = errorCache[i1];
@@ -336,24 +355,27 @@ public class SupportVectorMachine {
         double k12 = kernalClass.getKernalCatch(i1,i2);
         double k22 = kernalClass.getKernalCatch(i2,i2);
         // eta是alphas[j]的最优修改量，如果eta==0，需要退出for循环的当前迭代过程
-        // 参考《统计学习方法》李航-P125~P128<序列最小最优化算法>
+        //《统计学习方法》7.107
         double eta = 2 * k12 - k11 - k22;
-        //根据不同情况计算出a2
+        //根据不同情况计算出新的alpha2
         if (eta < 0) {
             //计算非约束条件下的最大值
             alpha2new = alpha2 - y2 * (E1 - E2) / eta;
 
-            //判断约束的条件
+            //《统计学习方法》7.108  判断约束的条件
             if (alpha2new < L) {
                 alpha2new = L;
             } else if (alpha2new > H) {
                 alpha2new = H;
             }
         }else {
+            /*
+                Lobj = objective function at a2=L
+                Hobj = objective function at a2=H
+             */
+
             double c1 = eta / 2;
             double c2 = y2 * (E1 - E2) - eta * alpha2;
-
-            //Lobj和Hobj可以根据自己的爱好选择不同的函数
             double Lobj = c1 * L * L + c2 * L;
             double Hobj = c1 * H * H + c2 * H;
 
@@ -366,69 +388,72 @@ public class SupportVectorMachine {
             }
         }
 
+        if(alpha2new< 1e-8){
+            alpha2new = 0;
+        }else if(alpha2new > c-1e-8){
+            alpha2new = c;
+        }
+
         if (Math.abs(alpha2new - alpha2) < eps * (alpha2new + alpha2 + eps)) {
             return false;
         }
 
         //通过a2来更新a1
-        alpha1new = alpha1 + s * (alpha2 - alpha2new);
+        alpha1new = alpha1 + y1y2 * (alpha2 - alpha2new);
 
-        if (alpha1new < 0) {
-            alpha2new += s * alpha1new;
-            alpha1new = 0;
-        }else if (alpha1new > c) {
-            alpha2new += s * (alpha1new - c);
-            alpha1new = c;
-        }
+//        if (alpha1new < 1e-8) {
+//            alpha2new += y1y2 * alpha1new;
+//            alpha1new = 0;
+//        }else if (alpha1new > c-1e-8) {
+//            alpha2new += y1y2 * (alpha1new - c);
+//            alpha1new = c;
+//        }
 
         /*
-            在对alpha[i], alpha[j] 进行优化之后，给这两个alpha值设置一个常数b。
-            w= Σ[1~n] ai*yi*xi => b = yi- Σ[1~n] ai*yi(xi*xj)
-            所以：  b1 - b = (y1-y) - Σ[1~n] yi*(a1-a)*(xi*x1)
-            为什么减2遍？ 因为是 减去Σ[1~n]，正好2个变量i和j，所以减2遍
+            7.115
+            7.116
+            选择满足    0<alpha1new<c 的b来更新
          */
-        double b1 = b - E1 - y1 * (alpha1new - alpha1) * k11 - y2 * (alpha2new - alpha2) * k12;
-        double b2 = b - E2 - y1 * (alpha1new - alpha1) * k12 - y2 * (alpha2new - alpha2) * k22;
-
-        double bNew = 0;
-//		double deltaB = 0;
         if (0 < alpha1new && alpha1new < c) {
-            bNew = b1;
+            this.b = b - E1 - y1 * (alpha1new - alpha1) * k11 - y2 * (alpha2new - alpha2) * k12;
         }else if (0 < alpha2new && alpha2new < c) {
-            bNew = b2;
+            this.b = b - E2 - y1 * (alpha1new - alpha1) * k12 - y2 * (alpha2new - alpha2) * k22;
         }else {
-            bNew = (b1 + b2) / 2;
+            double b1 = b - E1 - y1 * (alpha1new - alpha1) * k11 - y2 * (alpha2new - alpha2) * k12;
+            double b2 = b - E2 - y1 * (alpha1new - alpha1) * k12 - y2 * (alpha2new - alpha2) * k22;
+            this.b = (b1 + b2) / 2;
         }
-//		deltaB = bNew - this.b; //b的增量
-        this.b = bNew;
+
         // 更新误差缓存
         this.errorCache[i1] = calcErrorCatch(i1);
         this.errorCache[i2] = calcErrorCatch(i2);
-        //store a1, a2 in alpha array
+
         alpha[i1] = alpha1new;
         alpha[i2] = alpha2new;
         return true;
     }
 
     /**
-     * 计算误差公式： error = ∑a[i]*y[i]*k(x,x[i]) - y[i]
+     * 《统计学习方法》 7.105
      * 预测值 减去 目标值
-     * @param k
-     * @return
+     * @param i
+     * @return Ei
      */
-    private double calcErrorCatch(int k){
-        return predicTrain(k) - this.trainVectorMatrix.get(k).getTarget();
+    private double calcErrorCatch(int i){
+        double yi = this.trainVectorMatrix.get(i).getTarget();
+        return predicTrain(i) - yi;
     }
 
     /**
      * 学习函数
-     * @param k k
+     * @param i i
      * @return sum
      */
-    private double predicTrain(int k){
+    private double predicTrain(int i){
         double sum = 0.0;
-        for (int i = 0; i < n; i++){
-            sum += alpha[i] * trainVectorMatrix.get(i).getTarget() * kernalClass.getKernalCatch(i,k);
+        for (int j = 0; j < n; j++){
+            double yj = trainVectorMatrix.get(j).getTarget();
+            sum += alpha[j] * yj * kernalClass.getKernalCatch(j,i);
         }
         sum += this.b;
         return sum;
@@ -440,7 +465,8 @@ public class SupportVectorMachine {
     public double predict(AbstractFeatureLine vectorLine){
         double sum = 0.0;
         for (int j = 0; j < n; j++) {
-            sum += alpha[j] * trainVectorMatrix.get(j).getTarget()* kernalClass.kernalFunction(trainVectorMatrix.get(j), vectorLine);
+            double yj = trainVectorMatrix.get(j).getTarget();
+            sum += alpha[j] * yj * kernalClass.kernalFunction(trainVectorMatrix.get(j), vectorLine);
         }
         sum += b;
         return sum;

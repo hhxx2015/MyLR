@@ -111,7 +111,7 @@ public class PlotUtil {
                 vectorLine.put(0,x);
                 vectorLine.put(1,y);
                 backgroundOut[count] = lrh.predict(vectorLine) + 1.0;
-                System.out.println(backgroundOut[count]);
+//                System.out.println(backgroundOut[count]);
                 count++;
             }
         }

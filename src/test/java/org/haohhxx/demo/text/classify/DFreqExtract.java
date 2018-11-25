@@ -18,9 +18,9 @@ public class DFreqExtract {
 
     public static void main(String[] args) {
 
-        String textLinesn = "C:/data/ohsumed.91/neg.w.txt";
-        String textLinesp = "C:/data/ohsumed.91/pos.w.txt";
-        String dfPath = "C:\\code\\jdk8workspace\\MyLR\\src\\test\\resources\\df.txt";
+        String textLinesn = "D:/data/t9.ohsumed91/neg.w.txt";
+        String textLinesp = "D:/data/t9.ohsumed91/pos.w.txt";
+        String dfPath = "E:\\code\\jdk8workspace\\ml\\src\\test\\resources\\text\\df.txt";
 
         List<String> irLinesneg = IteratorReader.getIteratorReader(textLinesn).readLines();
         List<String> irLinespos = IteratorReader.getIteratorReader(textLinesp).readLines();
