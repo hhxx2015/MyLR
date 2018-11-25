@@ -48,11 +48,11 @@ HingeLoss
 
 其中<a href="https://www.codecogs.com/eqnedit.php?latex=\frac{1}{2}||w||^{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{1}{2}||w||^{2}" title="\frac{1}{2}||w||^{2}" /></a>
 可以说是很眼熟了。就是我们熟知的<a href="https://www.codecogs.com/eqnedit.php?latex=L_{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L_{2}" title="L_{2}" /></a>
-正则。实现算法时其<a href="https://www.codecogs.com/eqnedit.php?latex=\frac{1}{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{1}{2}" title="\frac{1}{2}" /></a>也可以换成参数进行调整。
+正则。实现算法时其 <a href="https://www.codecogs.com/eqnedit.php?latex=\frac{1}{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{1}{2}" title="\frac{1}{2}" /></a> 也可以换成参数进行调整。
 
 Platt SMO 求解 SVM
 ------------------
-求解过程需要先复习~~补习~~一下《高等数学 第六版 下册》P113《条件极值 拉格朗日乘数法》
+~~求解过程需要先复习《高等数学 第六版 下册》P113《条件极值 拉格朗日乘数法》~~  ⊙﹏⊙
 
 
 SMO算法可以读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/core/svm/smo-book.pdf)
