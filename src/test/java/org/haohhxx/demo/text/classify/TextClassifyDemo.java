@@ -33,9 +33,9 @@ public class TextClassifyDemo {
 
 
         // 13min c=0.0003  70min c=50  9337条数据
-        // c=50 50000条数据
-
-        //14:49
+        // 9.5h  c=50 50000条数据
+        //
+        // svm-light  14:49
     }
 
 }
