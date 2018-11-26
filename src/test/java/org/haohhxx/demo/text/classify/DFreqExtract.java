@@ -44,8 +44,5 @@ public class DFreqExtract {
         }
         hw.close();
 
-
-
     }
-
 }

@@ -2,6 +2,8 @@ package org.haohhxx.util.core.svm;
 
 import org.haohhxx.util.feature.AbstractFeatureLine;
 import org.haohhxx.util.feature.FeatureMatrix;
+import org.haohhxx.util.io.HaoWriter;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -97,11 +99,11 @@ public class SupportVectorMachine {
     }
 
     public static class RBFKernalNoCatch implements KernalClass{
-        private double sigma;
+        private double gamma;
         private FeatureMatrix vectorMatrix;
 
-        public RBFKernalNoCatch(double sigma, FeatureMatrix vectorMatrix){
-            this.sigma = sigma;
+        public RBFKernalNoCatch(double gamma, FeatureMatrix vectorMatrix){
+            this.gamma = gamma;
             this.vectorMatrix = vectorMatrix;
         }
 
@@ -115,19 +117,17 @@ public class SupportVectorMachine {
             double i1i2 = x1.dot(x2);
             double i1i1 = x1.pow2();
             double i2i2 = x2.pow2();
-            return Math.exp(- (i1i1 + i2i2 - 2 * i1i2) / (2 * Math.pow(sigma,2)));
+            return Math.exp(-gamma * (i1i1 + i2i2 - 2 * i1i2));
         }
-
     }
 
 
-
     public static class RBFKernal implements KernalClass{
-        private double sigma;
+        private double gamma;
         private double[][] kernelCache;
 
-        public RBFKernal(double sigma, FeatureMatrix vectorMatrix){
-            this.sigma = sigma;
+        public RBFKernal(double gamma, FeatureMatrix vectorMatrix){
+            this.gamma = gamma;
             int n = vectorMatrix.size();
             this.kernelCache = new double[n][n];
 
@@ -148,7 +148,7 @@ public class SupportVectorMachine {
             double i1i2 = x1.dot(x2);
             double i1i1 = x1.pow2();
             double i2i2 = x2.pow2();
-            return Math.exp(- (i1i1 + i2i2 - 2 * i1i2) / (2 * Math.pow(sigma,2)));
+            return Math.exp(-gamma * (i1i1 + i2i2 - 2 * i1i2));
         }
 
     }
@@ -526,4 +526,15 @@ public class SupportVectorMachine {
     public double[] getAlpha() {
         return alpha;
     }
+
+    public void save(String modelPath){
+        HaoWriter hw = new HaoWriter(modelPath);
+        hw.writeLine(String.valueOf(this.b));
+        for (int i = 0; i <alpha.length ; i++) {
+            hw.writeOut(String.valueOf(alpha[i]));
+        }
+        hw.close();
+    }
+
+
 }
