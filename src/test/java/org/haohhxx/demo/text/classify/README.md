@@ -71,7 +71,17 @@ Platt SMO 序列最小优化算法求解 SVM
 
 <img src="https://latex.codecogs.com/gif.latex?L(w,b,\alpha,\xi,\mu)=&space;\frac{1}{2}&space;||w&space;||^{2}&plus;C\sum_{i=1}^{m}\xi_{i}&space;&plus;&space;\sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w^{T}x_{i}&plus;b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}" title="L(w,b,\alpha,\xi,\mu)= \frac{1}{2} ||w ||^{2}+C\sum_{i=1}^{m}\xi_{i} + \sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w^{T}x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}" />
 
+使偏L对偏<img src="https://latex.codecogs.com/gif.latex?w,b,\xi_{i}" title="w,b,\xi_{i}" />为0
 
+<img src="http://quicklatex.com/cache3/27/ql_4777a6683e755ebdb9774c02ca761827_l3.png">
+
+再将其带回L中，得到对偶问题
+
+<img src="http://quicklatex.com/cache3/ce/ql_4190cde51e3b35771659999bd435d4ce_l3.png">
+
+同时满足KKT条件
+
+然后使用SMO算法对对偶问题求解。首先需要了解坐标上升法：
 
 
 
