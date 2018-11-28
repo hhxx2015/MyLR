@@ -81,7 +81,14 @@ Platt SMO 序列最小优化算法求解 SVM
 
 同时满足KKT条件
 
-然后使用SMO算法对对偶问题求解。首先需要了解坐标上升法：
+<img src="https://latex.codecogs.com/gif.latex?\left\{\begin{matrix}&space;&&space;\alpha_{i}\geq&space;0,\mu_{i}&space;\geq&space;0&space;,&space;\\&space;&&space;y_{i}f(x_{i})-1&plus;\xi_{i}&space;\geq&space;0&space;,&space;\\&space;&&space;\alpha_{i}(y_{i}f(x_{i})-1&plus;\xi_{i})=0,\\&space;&&space;\xi_{i}\geq&space;0,&space;\xi_{i}\mu_{i}=0&space;\end{matrix}\right." title="\left\{\begin{matrix} & \alpha_{i}\geq 0,\mu_{i} \geq 0 , \\ & y_{i}f(x_{i})-1+\xi_{i} \geq 0 , \\ & \alpha_{i}(y_{i}f(x_{i})-1+\xi_{i})=0,\\ & \xi_{i}\geq 0, \xi_{i}\mu_{i}=0 \end{matrix}\right." />
+
+
+然后使用SMO算法对对偶问题求解。首先需要了解坐标上升(下降)法：
+
+
+
+
 
 
 

@@ -1,0 +1,16 @@
+%!TEX program = xelatex
+
+\frac{\partial L }{\partial w}= w- \sum_{i=1}^{m} \alpha_{i} y_{i} x_{i}=0 \\
+\frac{\partial L }{\partial b}= \sum_{i=1}^{m} \alpha_{i} y_{i} =0 \\
+\frac{\partial L }{\partial \xi_{i}}= C -\alpha_{i} - \mu_{i}=0 \\
+
+\underset{\alpha}{max}W(\alpha) = \sum^{m}_{i=1}\alpha_{i}-\frac{1}{2}\sum^{m}_{i=1}\sum^{m}_{j=1}y_{i}y_{j}k(\vec{x_{i}}\vec{,x_{j}})\alpha_{i}\alpha_{j},\\
+.\qquad s.t. \qquad 0 \leq \alpha \leq C ,\alpha=1,2,...,m \\
+.\qquad \qquad  \sum^{m}_{i=1}\alpha_{i}y_{i}=0
+
+\left\{\begin{matrix}
+& \alpha_{i}\geq 0,\mu_{i} \geq 0 , \\
+& y_{i}f(x_{i})-1+\xi_{i} \geq 0 , \\
+& \alpha_{i}(y_{i}f(x_{i})-1+\xi_{i})=0,\\
+& \xi_{i}\geq 0, \xi_{i}\mu_{i}=0
+\end{matrix}\right.
