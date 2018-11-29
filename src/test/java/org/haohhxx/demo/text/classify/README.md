@@ -99,6 +99,9 @@ SMO算法便是类似思路的启发式方法。因约束条件中存在对单<i
 在选择参数<img src="https://latex.codecogs.com/gif.latex?\alpha_{1}" title="\alpha_{1}" />和<img src="https://latex.codecogs.com/gif.latex?\alpha_{2}" title="\alpha_{2}" />
 的情况下，SMO最优化问题变为
 
+关于SMO算法最好读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/core/svm/smo-book.pdf)
+原文，感觉讲解比书上详尽，而且给出了算法的伪代码。以下根据伪代码实现。
+
 ```java
 package org.haohhxx.util.core.svm;
 
@@ -637,9 +640,6 @@ public class SupportVectorMachine {
 
 ```
 
-
-SMO算法可以读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/core/svm/smo-book.pdf)
-原文，感觉讲解比书上详尽，而且给出了算法的伪代码。
 
 
 
