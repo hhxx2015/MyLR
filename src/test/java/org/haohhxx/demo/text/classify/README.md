@@ -21,8 +21,8 @@
 (正定核使用证明见《统计学习方法》P118)
 那些常见的核函数实现网上一大堆
 
-HingeLoss
----------
+软间隔和HingeLoss
+-----------------
 在实际分类过程中，很难存在超平面使样本完美的分布在超平面两侧，为此SVM算法又引入了“软间隔”的概念。
 
 ![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/test/java/org/haohhxx/demo/text/classify/pic/soft_margin.PNG)
@@ -34,11 +34,10 @@ HingeLoss
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\underset{w,b}{min}&space;\&space;\frac{1}{2}&space;||w&space;||^{2}&plus;C\sum_{i=1}^{m}loss_{0/1}(y_{i}(w^{T}x_{i}&plus;b)-1)))" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\underset{w,b}{min}&space;\&space;\frac{1}{2}&space;||w&space;||^{2}&plus;C\sum_{i=1}^{m}loss_{0/1}(y_{i}(w^{T}x_{i}&plus;b)-1)))" title="\underset{w,b}{min} \ \frac{1}{2} ||w ||^{2}+C\sum_{i=1}^{m}loss_{0/1}(y_{i}(w^{T}x_{i}+b)-1)))" /></a>
 
-关于损失函数的选择可以看一下 李宏毅 机器学习(2017)的第二十课SVM [bilibili av10590361](https://www.bilibili.com/video/av10590361/?p=31)
+这里以看一下 李宏毅 机器学习(2017)的第二十课SVM [bilibili av10590361](https://www.bilibili.com/video/av10590361/?p=31)
 
 ![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/test/java/org/haohhxx/demo/text/classify/pic/hinge_loss.PNG)
 (图自《机器学习》P131)
-
 
 0/1损失不易于直接求解<del>(数学性质不好、非凸、非连续、总之大佬都说不好)</del>
 
@@ -52,7 +51,8 @@ HingeLoss
 可以说是很眼熟了。就是我们熟知的<a href="https://www.codecogs.com/eqnedit.php?latex=L_{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L_{2}" title="L_{2}" /></a>
 正则。实现算法时其系数<a href="https://www.codecogs.com/eqnedit.php?latex=\frac{1}{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{1}{2}" title="\frac{1}{2}" /></a> 可以换成参数进行调整。
 
-再引入松弛变量<a href="https://www.codecogs.com/eqnedit.php?latex=\xi_{i}\geq&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\xi_{i}\geq&space;0" title="\xi_{i}\geq 0" /></a>使<a href="https://www.codecogs.com/eqnedit.php?latex=y_{i}(w^{T}x_{i}&plus;b)\geqslant1-&space;\xi&space;_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?y_{i}(w^{T}x_{i}&plus;b)\geqslant1-&space;\xi&space;_{i}" title="y_{i}(w^{T}x_{i}+b)\geqslant1- \xi _{i}" /></a>，这样就可以调整间隔的最大值。
+再引入松弛变量<img src="https://latex.codecogs.com/gif.latex?\xi_{i}\geq&space;0" title="\xi_{i}\geq 0" />使<a href="https://www.codecogs.com/eqnedit.php?latex=y_{i}(w^{T}x_{i}&plus;b)\geqslant1-&space;\xi&space;_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?y_{i}(w^{T}x_{i}&plus;b)\geqslant1-&space;\xi&space;_{i}" title="y_{i}(w^{T}x_{i}+b)\geqslant1- \xi _{i}" /></a>，这样就可以调整间隔的最大值。
+(关于<img src="https://latex.codecogs.com/gif.latex?\xi_{i}" title="\xi_{i}" />的等价代换证明可以看《统计学习方法》P114)
 
 则优化目标变更为
 
@@ -86,13 +86,20 @@ Platt SMO 序列最小优化算法求解 SVM
 
 然后使用SMO算法对对偶问题求解。首先需要了解坐标上升(下降)法：
 
+对于待优化无约束问题<img src="https://latex.codecogs.com/gif.latex?\underset{\alpha}{max}W(\alpha_{1},\alpha_{2},...,\alpha_{n})" title="\underset{\alpha}{max}W(\alpha_{1},\alpha_{2},...,\alpha_{n})" />
+依次固定参数<img src="https://latex.codecogs.com/gif.latex?\alpha_{i}" title="\alpha_{i}" />以外的参数，令其偏导为0，
+<img src="https://latex.codecogs.com/gif.latex?\frac{\partial&space;f}{\partial&space;\alpha_{i}}=0" title="\frac{\partial f}{\partial \alpha_{i}}=0" />
+得到新的<img src="https://latex.codecogs.com/gif.latex?\alpha_{i}" title="\alpha_{i}" />，更新<img src="https://latex.codecogs.com/gif.latex?\alpha_{i}" title="\alpha_{i}" />的值并对固定下一参数，
+不断迭代直至算法收敛，最终得到全部的参数。
 
-
-
-
+SMO算法便是类似思路的启发式方法。因约束条件中存在对单<img src="https://latex.codecogs.com/gif.latex?\alpha_{i}" title="\alpha_{i}" />的约束，所以SMO每次的优化参数为两个。
+每次迭代我们选择违背约束条件最大(根据直觉)的参数进行优化。
+在选择参数<img src="https://latex.codecogs.com/gif.latex?\alpha_{1}" title="\alpha_{1}" />和<img src="https://latex.codecogs.com/gif.latex?\alpha_{2}" title="\alpha_{2}" />
+的情况下，SMO最优化问题变为
 
 
 SMO算法可以读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/core/svm/smo-book.pdf)
+原文，感觉作者讲解比书上详尽，而且给出了算法的伪代码。
 
 
 
