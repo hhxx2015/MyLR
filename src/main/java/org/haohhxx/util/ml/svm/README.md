@@ -8,7 +8,7 @@
 
 其中距超平面最近的几个样本使以上等式成立，它们被称为“支持向量”。
 
-![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/test/java/org/haohhxx/demo/text/classify/pic/margin.PNG)
+![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/ml/svm/pic/margin.PNG)
 (图自《机器学习》P122)
 
 一个正类支持向量与一个负类支持向量到超平面距离之和为<a href="https://www.codecogs.com/eqnedit.php?latex=$$\gamma&space;=\frac{2}{||w||}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\gamma&space;=\frac{2}{||w||}$$" title="$$\gamma =\frac{2}{||w||}$$" /></a>，这一距离被称为间隔。支持向量机的优化过程就是使<a href="https://www.codecogs.com/eqnedit.php?latex=\gamma" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\gamma" title="\gamma" /></a>最大化的过程。为了最大化间隔，显然最小化<a href="https://www.codecogs.com/eqnedit.php?latex=$$\gamma&space;=\frac{2}{||w||}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\gamma&space;=\frac{2}{||w||}$$" title="$$\gamma =\frac{2}{||w||}$$" /></a>的分母<a href="https://www.codecogs.com/eqnedit.php?latex=||w||" target="_blank"><img src="https://latex.codecogs.com/gif.latex?||w||" title="||w||" /></a>是等价的。于是最基本的支持向量机表示为
@@ -27,7 +27,7 @@
 -----------------
 在实际分类过程中，很难存在超平面使样本完美的分布在超平面两侧，为此SVM算法又引入了“软间隔”的概念。
 
-![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/test/java/org/haohhxx/demo/text/classify/pic/soft_margin.PNG)
+![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/ml/svm/pic/soft_margin.PNG)
 (图自《机器学习》P129)
 
 在此基础上，我们的优化目标变成了**“最大化间隔的同时，使大多数样本满足约定条件。”**
@@ -38,7 +38,7 @@
 
 损失函数这里以看一下 李宏毅 机器学习(2017)的第二十课SVM [bilibili av10590361](https://www.bilibili.com/video/av10590361/?p=31)(台湾口音十分带感)
 
-![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/test/java/org/haohhxx/demo/text/classify/pic/hinge_loss.PNG)
+![avatar](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/ml/svm/pic/hinge_loss.PNG)
 (图自《机器学习》P131)
 
 0/1损失不易于直接求解<del>(数学性质不好、非凸、非连续、总之大佬都说不好)</del>
@@ -99,7 +99,7 @@ SMO算法便是类似思路的启发式方法。因约束条件中存在对单<i
 <img src="http://quicklatex.com/cache3/57/ql_0fafb8c6f54a7ad4ef646e741fa6e657_l3.png">
 
 
-关于SMO算法最好读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/core/svm/smo-book.pdf)
+关于SMO算法最好读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/ml/svm/smo-book.pdf)
 原文，感觉讲解比书上详尽，而且给出了算法的伪代码。以下根据伪代码实现。
 
 ```java
