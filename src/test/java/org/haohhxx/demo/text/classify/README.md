@@ -58,12 +58,10 @@
 
 则优化目标变更为
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=\underset{w,b,\&space;\xi}{min}&space;\&space;\frac{1}{2}&space;||w&space;||^{2}&plus;C\sum_{i=1}^{m}\xi_{i}\\&space;.\qquad&space;s.t.&space;\&space;\&space;y^{_{i}}(w^{T}x_{i}&plus;b)\geq&space;1-\xi_{i}\\&space;.\qquad\qquad&space;\xi_{i}\geq&space;0,\&space;i=1,2,...,m." target="_blank"><img src="https://latex.codecogs.com/gif.latex?\underset{w,b,\&space;\xi}{min}&space;\&space;\frac{1}{2}&space;||w&space;||^{2}&plus;C\sum_{i=1}^{m}\xi_{i}\\&space;.\qquad&space;s.t.&space;\&space;\&space;y^{_{i}}(w^{T}x_{i}&plus;b)\geq&space;1-\xi_{i}\\&space;.\qquad\qquad&space;\xi_{i}\geq&space;0,\&space;i=1,2,...,m." title="\underset{w,b,\ \xi}{min} \ \frac{1}{2} ||w ||^{2}+C\sum_{i=1}^{m}\xi_{i}\\ .\qquad s.t. \ \ y^{_{i}}(w^{T}x_{i}+b)\geq 1-\xi_{i}\\ .\qquad\qquad \xi_{i}\geq 0,\ i=1,2,...,m." /></a>
-
+<img src="http://quicklatex.com/cache3/e5/ql_3a06764c39413e1714299f441bd748e5_l3.png">
 
 Platt SMO 序列最小优化算法求解 SVM
 ----------------------------------
-<del>求解过程需要先复习《高等数学 第六版 下册》P113《条件极值 拉格朗日乘数法》</del>  ⊙﹏⊙
 
 根据优化目标的两个条件引入拉格朗日乘子
 <img src="https://latex.codecogs.com/gif.latex?\alpha&space;_{i}\geq&space;0" title="\alpha _{i}\geq 0" />
@@ -71,20 +69,20 @@ Platt SMO 序列最小优化算法求解 SVM
 <img src="https://latex.codecogs.com/gif.latex?\mu&space;_{i}\geq&space;0" title="\mu _{i}\geq 0" />
 得到拉格朗日函数：
 
-<img src="https://latex.codecogs.com/gif.latex?L(w,b,\alpha,\xi,\mu)=&space;\frac{1}{2}&space;||w&space;||^{2}&plus;C\sum_{i=1}^{m}\xi_{i}&space;&plus;&space;\sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w^{T}x_{i}&plus;b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}" title="L(w,b,\alpha,\xi,\mu)= \frac{1}{2} ||w ||^{2}+C\sum_{i=1}^{m}\xi_{i} + \sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w^{T}x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}" />
+<img src="http://quicklatex.com/cache3/1d/ql_ed1f715c49f263515f8e0691f032831d_l3.png">
 
 使偏L对偏<img src="https://latex.codecogs.com/gif.latex?w,b,\xi_{i}" title="w,b,\xi_{i}" />为0
 
-<img src="http://quicklatex.com/cache3/27/ql_4777a6683e755ebdb9774c02ca761827_l3.png">
+<img src="http://quicklatex.com/cache3/98/ql_f504a97217f2257c958f43a36b53db98_l3.png">
 
 再将其带回L中，得到对偶问题
 
-<img src="http://quicklatex.com/cache3/ce/ql_4190cde51e3b35771659999bd435d4ce_l3.png">
+<img src="http://quicklatex.com/cache3/54/ql_450c4e1a4c37a011f5c9e53c8a348654_l3.png">
+
 
 同时满足KKT条件
 
-<img src="https://latex.codecogs.com/gif.latex?\left\{\begin{matrix}&space;&&space;\alpha_{i}\geq&space;0,\mu_{i}&space;\geq&space;0&space;,&space;\\&space;&&space;y_{i}f(x_{i})-1&plus;\xi_{i}&space;\geq&space;0&space;,&space;\\&space;&&space;\alpha_{i}(y_{i}f(x_{i})-1&plus;\xi_{i})=0,\\&space;&&space;\xi_{i}\geq&space;0,&space;\xi_{i}\mu_{i}=0&space;\end{matrix}\right." title="\left\{\begin{matrix} & \alpha_{i}\geq 0,\mu_{i} \geq 0 , \\ & y_{i}f(x_{i})-1+\xi_{i} \geq 0 , \\ & \alpha_{i}(y_{i}f(x_{i})-1+\xi_{i})=0,\\ & \xi_{i}\geq 0, \xi_{i}\mu_{i}=0 \end{matrix}\right." />
-
+<img src="http://quicklatex.com/cache3/0b/ql_c0da7ff5e04b853a72f54c7aeb932e0b_l3.png">
 
 然后使用SMO算法对对偶问题求解。首先需要了解坐标上升(下降)法：
 
@@ -98,6 +96,8 @@ SMO算法便是类似思路的启发式方法。因约束条件中存在对单<i
 每次迭代我们选择违背约束条件最大(根据直觉)的参数进行优化。
 在选择参数<img src="https://latex.codecogs.com/gif.latex?\alpha_{1}" title="\alpha_{1}" />和<img src="https://latex.codecogs.com/gif.latex?\alpha_{2}" title="\alpha_{2}" />
 的情况下，SMO最优化问题变为
+<img src="http://quicklatex.com/cache3/57/ql_0fafb8c6f54a7ad4ef646e741fa6e657_l3.png">
+
 
 关于SMO算法最好读一下[《Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines》](https://raw.githubusercontent.com/hhxx2015/MyLR/MyLR_v4/src/main/java/org/haohhxx/util/core/svm/smo-book.pdf)
 原文，感觉讲解比书上详尽，而且给出了算法的伪代码。以下根据伪代码实现。
@@ -639,12 +639,6 @@ public class SupportVectorMachine {
 }
 
 ```
-
-
-
-
-SVMlight
---------
 
 
 测试与使用

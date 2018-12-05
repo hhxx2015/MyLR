@@ -1,21 +1,40 @@
 %!TEX program = xelatex
 
+\begin{gather*}
+\underset{w,b,\ \xi}{min} \ \frac{1}{2} ||w ||^{2}+C\sum_{i=1}^{m}\xi_{i}\\
+s.t. \ \ y^{_{i}}(w^{T}x_{i}+b)\geq 1-\xi_{i}\\
+\xi_{i}\geq 0,\ i=1,2,...,m.
+\end{gather*}
+
+
+\begin{gather*}
 \frac{\partial L }{\partial w}= w- \sum_{i=1}^{m} \alpha_{i} y_{i} x_{i}=0 \\
 \frac{\partial L }{\partial b}= \sum_{i=1}^{m} \alpha_{i} y_{i} =0 \\
 \frac{\partial L }{\partial \xi_{i}}= C -\alpha_{i} - \mu_{i}=0 \\
+\end{gather*}
 
+
+\begin{gather*}
 \underset{\alpha}{max}W(\alpha) = \sum^{m}_{i=1}\alpha_{i}-\frac{1}{2}\sum^{m}_{i=1}\sum^{m}_{j=1}y_{i}y_{j}k(\vec{x_{i}}\vec{,x_{j}})\alpha_{i}\alpha_{j},\\
-.\qquad s.t. \qquad 0 \leq \alpha \leq C ,\alpha=1,2,...,m \\
-.\qquad \qquad  \sum^{m}_{i=1}\alpha_{i}y_{i}=0
+s.t. \qquad 0 \leq \alpha \leq C ,\alpha=1,2,...,m \\
+\sum^{m}_{i=1}\alpha_{i}y_{i}=0
+\end{gather*}
 
+
+L(w,b,\alpha,\xi,\mu)= \frac{1}{2} ||w ||^{2}+C\sum_{i=1}^{m}\xi_{i} + \sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w^{T}x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}
+
+\begin{gather*}
 \left\{\begin{matrix}
 & \alpha_{i}\geq 0,\mu_{i} \geq 0 , \\
 & y_{i}f(x_{i})-1+\xi_{i} \geq 0 , \\
 & \alpha_{i}(y_{i}f(x_{i})-1+\xi_{i})=0,\\
 & \xi_{i}\geq 0, \xi_{i}\mu_{i}=0
 \end{matrix}\right.
+\end{gather*}
 
 
+
+\begin{gather*}
 \underset{\alpha_{1},\alpha_{2}} {mix}W(\alpha_{1},\alpha_{2})
 =\frac{1}{2}K_{11}\alpha_{1}^{2}
 +K_{22}\alpha_{2}^{2}
@@ -25,8 +44,10 @@
 +y_{1}\alpha_{1}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i1}
 +y_{2}\alpha_{2}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i2}
 \\
-s.t. y_{1}\alpha_{1}+y_{2}\alpha_{2}=-\sum^{N}_{i=3}y_{i}\alpha_{i}=\xi
+  s.t. \qquad  y_{1}\alpha_{1}+y_{2}\alpha_{2}=-\sum^{N}_{i=3}y_{i}\alpha_{i}=\xi
 \\
-0 \leq \alpha_{i} \leq C ,i=1,2
+ 0 \leq \alpha_{i} \leq C ,i=1,2
+\end{gather*}
+
 
 
