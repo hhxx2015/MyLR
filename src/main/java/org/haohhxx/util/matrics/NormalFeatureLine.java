@@ -1,4 +1,4 @@
-package org.haohhxx.util.matric;
+package org.haohhxx.util.matrics;
 
 
 /**

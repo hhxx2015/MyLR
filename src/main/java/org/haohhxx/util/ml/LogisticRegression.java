@@ -1,8 +1,8 @@
 package org.haohhxx.util.ml;
 
-import org.haohhxx.util.matric.AbstractFeatureLine;
-import org.haohhxx.util.matric.FeatureMatrix;
-import org.haohhxx.util.matric.SparseFeatureLine;
+import org.haohhxx.util.matrics.AbstractFeatureLine;
+import org.haohhxx.util.matrics.FeatureMatrix;
+import org.haohhxx.util.matrics.SparseFeatureLine;
 
 import java.util.HashMap;
 import java.util.List;

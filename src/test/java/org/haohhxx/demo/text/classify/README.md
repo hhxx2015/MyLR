@@ -105,8 +105,8 @@ SMO算法便是类似思路的启发式方法。因约束条件中存在对单<i
 ```java
 package org.haohhxx.util.ml.svm;
 
-import org.haohhxx.util.matric.AbstractFeatureLine;
-import org.haohhxx.util.matric.FeatureMatrix;
+import org.haohhxx.util.matrics.AbstractFeatureLine;
+import org.haohhxx.util.matrics.FeatureMatrix;
 import org.haohhxx.util.io.HaoWriter;
 
 import java.util.*;

@@ -4,9 +4,9 @@
 
 
 import org.haohhxx.util.ml.LogisticRegression;
-import org.haohhxx.util.matric.FeatureLine;
-import org.haohhxx.util.matric.FeatureMatrix;
-import org.haohhxx.util.matric.SparseFeatureLine;
+import org.haohhxx.util.matrics.FeatureLine;
+import org.haohhxx.util.matrics.FeatureMatrix;
+import org.haohhxx.util.matrics.SparseFeatureLine;
 import org.haohhxx.util.io.IteratorReader;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;

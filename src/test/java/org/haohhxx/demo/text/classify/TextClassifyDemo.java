@@ -1,8 +1,8 @@
 package org.haohhxx.demo.text.classify;
 
 import org.haohhxx.util.ml.svm.SupportVectorMachine;
-import org.haohhxx.util.matric.FeatureMatrix;
-import org.haohhxx.util.matric.SparseFeatureLine;
+import org.haohhxx.util.matrics.FeatureMatrix;
+import org.haohhxx.util.matrics.SparseFeatureLine;
 
 public class TextClassifyDemo {
 
