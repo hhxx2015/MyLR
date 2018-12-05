@@ -103,10 +103,10 @@ SMO算法便是类似思路的启发式方法。因约束条件中存在对单<i
 原文，感觉讲解比书上详尽，而且给出了算法的伪代码。以下根据伪代码实现。
 
 ```java
-package org.haohhxx.util.core.svm;
+package org.haohhxx.util.ml.svm;
 
-import org.haohhxx.util.feature.AbstractFeatureLine;
-import org.haohhxx.util.feature.FeatureMatrix;
+import org.haohhxx.util.matric.AbstractFeatureLine;
+import org.haohhxx.util.matric.FeatureMatrix;
 import org.haohhxx.util.io.HaoWriter;
 
 import java.util.*;

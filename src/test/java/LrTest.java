@@ -1,7 +1,7 @@
-import org.haohhxx.util.core.LogisticRegression;
-import org.haohhxx.util.feature.AbstractFeatureLine;
-import org.haohhxx.util.feature.FeatureMatrix;
-import org.haohhxx.util.feature.SparseFeatureLine;
+import org.haohhxx.util.ml.LogisticRegression;
+import org.haohhxx.util.matric.AbstractFeatureLine;
+import org.haohhxx.util.matric.FeatureMatrix;
+import org.haohhxx.util.matric.SparseFeatureLine;
 import org.haohhxx.util.io.IteratorReader;
 
 

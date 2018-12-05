@@ -1,4 +1,4 @@
-package org.haohhxx.util.feature;
+package org.haohhxx.util.matric;
 
 /**
  * @author zhenyuan_hao@163.com

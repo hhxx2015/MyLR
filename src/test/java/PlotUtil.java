@@ -3,12 +3,11 @@
  */
 
 
-import org.haohhxx.util.core.LogisticRegression;
-import org.haohhxx.util.core.svm.SupportVectorMachine;
-import org.haohhxx.util.feature.FeatureLine;
-import org.haohhxx.util.feature.FeatureMatrix;
-import org.haohhxx.util.feature.NormalFeatureLine;
-import org.haohhxx.util.feature.SparseFeatureLine;
+import org.haohhxx.util.ml.svm.SupportVectorMachine;
+import org.haohhxx.util.matric.FeatureLine;
+import org.haohhxx.util.matric.FeatureMatrix;
+import org.haohhxx.util.matric.NormalFeatureLine;
+import org.haohhxx.util.matric.SparseFeatureLine;
 import org.haohhxx.util.io.IteratorReader;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;

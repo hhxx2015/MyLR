@@ -1,10 +1,8 @@
 package org.haohhxx.demo.text.classify;
 
-import org.haohhxx.util.core.svm.SupportVectorMachine;
-import org.haohhxx.util.feature.FeatureMatrix;
-import org.haohhxx.util.feature.SparseFeatureLine;
-
-import java.util.List;
+import org.haohhxx.util.ml.svm.SupportVectorMachine;
+import org.haohhxx.util.matric.FeatureMatrix;
+import org.haohhxx.util.matric.SparseFeatureLine;
 
 public class TextClassifyDemo {
 

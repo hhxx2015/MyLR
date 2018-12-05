@@ -1,4 +1,4 @@
-package org.haohhxx.util.feature;
+package org.haohhxx.util.matric;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
@@ -23,10 +23,10 @@ public class RankVectorMatrixBuilder extends LinkedHashMap<Integer, FeatureMatri
         AbstractFeatureLine vectorLine = null;
         try {
             switch (featureLine.getName()){
-                case "org.haohhxx.util.feature.NormalFeatureLine":
+                case "org.haohhxx.util.matric.NormalFeatureLine":
                     vectorLine = (AbstractFeatureLine)featureLine.getDeclaredConstructor(double.class, int.class).newInstance(target, feanub);
                     break;
-                case "org.haohhxx.util.feature.SparseFeatureLine":
+                case "org.haohhxx.util.matric.SparseFeatureLine":
                     vectorLine = (AbstractFeatureLine)featureLine.getDeclaredConstructor(double.class, int.class).newInstance(target, feanub);
                     break;
                 default:
