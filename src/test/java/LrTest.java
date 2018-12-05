@@ -1,4 +1,4 @@
-import org.haohhxx.util.ml.LogisticRegression;
+import org.haohhxx.util.ml.lr.LogisticRegression;
 import org.haohhxx.util.matrics.AbstractFeatureLine;
 import org.haohhxx.util.matrics.FeatureMatrix;
 import org.haohhxx.util.matrics.SparseFeatureLine;

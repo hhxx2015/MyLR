@@ -1,4 +1,4 @@
-package org.haohhxx.util.ml;
+package org.haohhxx.util.ml.lr;
 
 import org.haohhxx.util.matrics.AbstractFeatureLine;
 import org.haohhxx.util.matrics.FeatureMatrix;

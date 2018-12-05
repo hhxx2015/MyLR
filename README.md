@@ -4,9 +4,9 @@ java简单实现一些机器学习算法
 2018-11-14 todo:
 ---------------
 
-~~逻辑回归~~
+[~~逻辑回归~~](https://github.com/hhxx2015/MyLR/tree/MyLR_v4/src/main/java/org/haohhxx/util/ml/lr)
 
-[~~SVM~~](https://github.com/hhxx2015/MyLR/tree/MyLR_v4/src/test/java/org/haohhxx/demo/text/classify)
+[~~SVM~~](https://github.com/hhxx2015/MyLR/tree/MyLR_v4/src/main/java/org/haohhxx/util/ml/svm)
 
 ~~Rank-SVM~~
 
