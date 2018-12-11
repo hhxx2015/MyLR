@@ -1,9 +1,9 @@
 import org.haohhxx.util.MapUtil;
 import org.haohhxx.util.ml.svm.SupportVectorMachine;
 import org.haohhxx.util.eval.NDCG;
-import org.haohhxx.util.matrics.FeatureMatrix;
-import org.haohhxx.util.matrics.NormalFeatureLine;
-import org.haohhxx.util.matrics.RankVectorMatrixBuilder;
+import org.haohhxx.util.matrics.feature.FeatureMatrix;
+import org.haohhxx.util.matrics.feature.NormalFeatureLine;
+import org.haohhxx.util.matrics.feature.RankVectorMatrixBuilder;
 import org.haohhxx.util.io.IteratorReader;
 
 import java.util.*;

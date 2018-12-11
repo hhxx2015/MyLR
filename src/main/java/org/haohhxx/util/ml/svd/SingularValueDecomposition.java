@@ -13,7 +13,6 @@ public class SingularValueDecomposition {
     public static void main(String[] args) {
 
 
-
     }
 
 }

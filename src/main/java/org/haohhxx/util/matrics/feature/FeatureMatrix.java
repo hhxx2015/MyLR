@@ -1,4 +1,4 @@
-package org.haohhxx.util.matrics;
+package org.haohhxx.util.matrics.feature;
 
 import org.haohhxx.util.io.IteratorReader;
 

@@ -1,4 +1,4 @@
-package org.haohhxx.util.matrics;
+package org.haohhxx.util.matrics.feature;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;

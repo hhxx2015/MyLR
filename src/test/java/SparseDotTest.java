@@ -1,6 +1,6 @@
-import org.haohhxx.util.matrics.FeatureLine;
-import org.haohhxx.util.matrics.NormalFeatureLine;
-import org.haohhxx.util.matrics.SparseFeatureLine;
+import org.haohhxx.util.matrics.feature.FeatureLine;
+import org.haohhxx.util.matrics.feature.NormalFeatureLine;
+import org.haohhxx.util.matrics.feature.SparseFeatureLine;
 import org.junit.Test;
 
 public class SparseDotTest {

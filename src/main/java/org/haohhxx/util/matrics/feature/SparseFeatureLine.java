@@ -1,6 +1,7 @@
-package org.haohhxx.util.matrics;
+package org.haohhxx.util.matrics.feature;
 
 import com.google.common.collect.Sets;
+import org.haohhxx.util.matrics.VectorLine;
 
 import java.util.*;
 

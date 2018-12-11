@@ -1,5 +1,7 @@
-package org.haohhxx.util.matrics;
+package org.haohhxx.util.matrics.feature;
 
+
+import org.haohhxx.util.matrics.VectorLine;
 
 /**
  * @author zhenyuan_hao@163.com
