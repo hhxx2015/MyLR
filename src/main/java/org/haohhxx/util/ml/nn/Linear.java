@@ -1,13 +1,14 @@
 package org.haohhxx.util.ml.nn;
 
-import org.haohhxx.util.matrics.feature.NormalFeatureLine;
+import org.haohhxx.util.matrics.tensor.FloatTensor;
 
 public class Linear implements Layer {
 
-    private NormalFeatureLine hidden;
+    private FloatTensor hidden;
 
     @Override
     public void forword() {
+        
 
     }
 
