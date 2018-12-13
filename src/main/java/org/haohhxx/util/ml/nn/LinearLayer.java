@@ -1,12 +1,11 @@
 package org.haohhxx.util.ml.nn;
 
 
-import Jama.Matrix;
 
 public class LinearLayer implements Layer {
 
-    double bias;
-    double hidden[][];
+    private double bias;
+    private double hidden[][];
 
     private int hiddenSize;
     private int inputSize = 0;
