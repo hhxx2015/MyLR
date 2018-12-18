@@ -16,6 +16,20 @@ class MLP implements Layer{
         return o3;
     }
 
+
+
+    public double[] backward(double[] pre, double[] y) {
+        int targetNub = y.length;
+        double[] delta = new double[targetNub];
+        for (int i = 0; i < targetNub; i++) {
+            delta[i] = (y[i] - pre[i]) * pre[i] * (1.0 - pre[i]);
+        }
+
+        double[] dt3 = linearLayer3.backward(delta);
+        double[] dt2 = linearLayer3.backward(dt3);
+        linearLayer3.backward(dt2);
+        return null;
+    }
 }
 
 
@@ -48,7 +62,7 @@ public class MultiLayerPerceptronet {
     }
 
 
-    private void backPropagation(double[] pre, double[] y) {
+    public void backPropagation(double[] pre, double[] y) {
         int targetNub = y.length;
         double[] err = new double[targetNub];
         for (int i = 0; i < targetNub; i++) {
