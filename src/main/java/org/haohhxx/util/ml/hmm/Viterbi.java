@@ -1,5 +1,9 @@
 package org.haohhxx.util.ml.hmm;
 
+
+/**
+ * https://github.com/hankcs/Viterbi
+ */
 public class Viterbi {
 
     int[] compute(int[] observations,
@@ -8,6 +12,7 @@ public class Viterbi {
                   double[][] transitionProbability,
                   double[][] emissionProbability
     ){
+
 
 
 
